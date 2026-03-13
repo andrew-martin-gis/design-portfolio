@@ -57,6 +57,7 @@
 
     // ── Scene & fixed camera ─────────────────────────────────────────────
     const scene  = new THREE.Scene();
+    scene.background = new THREE.Color(0x020818); // prevents EffectComposer alpha/bloom black-disc artifact
     const camera = new THREE.PerspectiveCamera(45, W / H, 0.1, 200);
     camera.position.set(0, 0, 2.8);
     camera.lookAt(0, 0, 0);
