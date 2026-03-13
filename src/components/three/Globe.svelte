@@ -82,7 +82,7 @@
     // Inner sphere — night earth texture, dark fallback while loading
     const earthMat = new THREE.MeshBasicMaterial({ color: 0x020818 });
     new THREE.TextureLoader().load(
-      'https://unpkg.com/three-globe/example/img/earth-night.jpg',
+      `${base}earth-night.jpg`,
       tex => {
         tex.colorSpace = THREE.SRGBColorSpace;
         earthMat.map   = tex;
