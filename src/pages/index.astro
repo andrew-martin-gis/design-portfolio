@@ -59,7 +59,7 @@ const featured = projects.filter(p => p.featured);
       </div>
 
       <div class="all-projects">
-        <a href="#work" class="ghost-btn">
+        <a href={`${import.meta.env.BASE_URL}projects/`} class="ghost-btn">
           View all {projects.length} projects
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
             <path d="M2 7h10M7 2l5 5-5 5" stroke="currentColor" stroke-width="1.5"
