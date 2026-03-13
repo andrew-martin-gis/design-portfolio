@@ -15,6 +15,7 @@ export const projects = [
     category:    'spatial-analysis',
     gradient:    'linear-gradient(135deg, #1e3a5f 0%, #0f2027 100%)',
     featured:    true,
+    location:    { lat: 41.88, lon: -87.63, label: 'Chicago, IL' },
     details: {
       challenge:  'Combining multi-resolution raster data (Landsat 8 LST, LiDAR canopy) with vector administrative boundaries without introducing spatial bias.',
       approach:   'Reprojected all layers to Illinois State Plane (EPSG:3435), computed zonal statistics per community area, ran Moran\'s I to confirm spatial autocorrelation before regression.',
@@ -32,6 +33,7 @@ export const projects = [
     category:    'web-mapping',
     gradient:    'linear-gradient(135deg, #0d2137 0%, #1a3a5c 50%, #0d2137 100%)',
     featured:    true,
+    location:    { lat: 47.50, lon: -122.00, label: 'King County, WA' },
     details: {
       challenge:  'Generating isochrones for ~200k origin points at multiple time-of-day scenarios without overwhelming the OTP routing server.',
       approach:   'Batched OTP requests via R (opentripplanner package), cached results in PostgreSQL, rendered interactive choropleth with Mapbox GL JS deck.gl overlay.',
@@ -49,6 +51,7 @@ export const projects = [
     category:    'spatial-analysis',
     gradient:    'linear-gradient(135deg, #2d1b00 0%, #5c2d00 50%, #2d1b00 100%)',
     featured:    true,
+    location:    { lat: 45.50, lon: -120.50, label: 'Pacific Northwest' },
     details: {
       challenge:  'Class imbalance — burned pixels are rare relative to the study area, causing naive classifiers to predict no-fire everywhere.',
       approach:   'Random forest with SMOTE oversampling on the minority class; validated on held-out years (2019–2021) to prevent temporal data leakage.',
@@ -66,6 +69,7 @@ export const projects = [
     category:    'web-mapping',
     gradient:    'linear-gradient(135deg, #001a33 0%, #003366 100%)',
     featured:    false,
+    location:    { lat: 47.60, lon: -122.33, label: 'Port of Seattle, WA' },
     details: {
       challenge:  'Rendering 10 k+ AIS positions per update interval without frame drops on the client.',
       approach:   'Server-side clustering with dynamic de-clustering on zoom; used deck.gl ScatterplotLayer for GPU-accelerated point rendering.',
@@ -83,6 +87,7 @@ export const projects = [
     category:    'spatial-analysis',
     gradient:    'linear-gradient(135deg, #1a0a00 0%, #3d2200 50%, #1a0a00 100%)',
     featured:    false,
+    location:    { lat: 44.05, lon: -120.50, label: 'Central Oregon' },
     details: {
       challenge:  'Training data limited to ~300 confirmed sites; standard ML approaches overfit badly.',
       approach:   'MaxEnt species distribution modelling (originally ecological) adapted for cultural resource prediction; 10-fold cross-validation.',
@@ -100,6 +105,7 @@ export const projects = [
     category:    'web-mapping',
     gradient:    'linear-gradient(135deg, #001433 0%, #002b66 50%, #001433 100%)',
     featured:    false,
+    location:    { lat: 47.90, lon: -122.10, label: 'Snohomish River, WA' },
     details: {
       challenge:  'HEC-RAS outputs are large HDF5 files; extracting and serving per-pixel depth data to a web client efficiently.',
       approach:   'Python pipeline (h5py + rasterio) to convert HDF5 outputs to Cloud-Optimised GeoTIFFs; Leaflet client fetches tiles on demand via a lightweight tile server.',

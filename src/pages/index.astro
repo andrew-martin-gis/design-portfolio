@@ -26,10 +26,17 @@ const featured = projects.filter(p => p.featured);
       <div class="accent-line"></div>
       <h1 class="hero-name">Andrew Martin</h1>
       <p class="hero-role">GIS Designer &amp; Spatial Analyst</p>
-      <div class="scroll-hint">
-        <div class="scroll-line"></div>
-        <span>Scroll to explore</span>
-      </div>
+
+      <!-- Hint: click a glowing marker -->
+      <p class="hero-hint">Click a marker to explore projects</p>
+
+      <!-- Scroll arrow -->
+      <a href="#work" class="scroll-arrow" aria-label="Scroll to work">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+          <path d="M10 3v14M4 11l6 6 6-6" stroke="currentColor" stroke-width="1.5"
+                stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </a>
     </div>
   </section>
 
@@ -174,6 +181,8 @@ const featured = projects.filter(p => p.featured);
   }
 
   .hero-name {
+    /* mix-blend-mode: screen lets the globe "show through" the text */
+    mix-blend-mode: screen;
     opacity: 0;
     animation: slideUp 1s cubic-bezier(0.22, 1, 0.36, 1) forwards 0.55s;
   }
@@ -190,39 +199,36 @@ const featured = projects.filter(p => p.featured);
     animation: slideUp 1s cubic-bezier(0.22, 1, 0.36, 1) forwards 0.75s;
   }
 
-  .scroll-hint {
-    margin-top: 2.8rem;
-    display: flex;
-    align-items: center;
-    gap: 0.8rem;
-    opacity: 0;
-    animation: fadeIn 1s ease forwards 1.6s;
-  }
-
-  .scroll-hint span {
+  .hero-hint {
+    font-family: var(--font);
     font-size: 0.65rem;
-    letter-spacing: 0.22em;
+    font-weight: 300;
+    letter-spacing: 0.18em;
     text-transform: uppercase;
     color: var(--text-muted);
+    margin-top: 1rem;
+    opacity: 0;
+    animation: fadeIn 1s ease forwards 1.2s;
   }
 
-  .scroll-line {
-    width: 1px;
-    height: 28px;
-    background: rgba(255, 255, 255, 0.1);
-    position: relative;
-    overflow: hidden;
+  /* Pulsing scroll arrow */
+  .scroll-arrow {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    margin-top: 2.5rem;
+    color: rgba(255, 255, 255, 0.3);
+    animation: arrowPulse 2.2s ease-in-out infinite 2s;
+    transition: color 0.2s;
+    pointer-events: auto;
   }
+  .scroll-arrow:hover { color: var(--accent-light); }
 
-  .scroll-line::after {
-    content: '';
-    position: absolute;
-    top: -100%;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: var(--accent);
-    animation: scrollTick 2.4s ease-in-out infinite 2s;
+  @keyframes arrowPulse {
+    0%, 100% { transform: translateY(0); opacity: 0.3; }
+    50%       { transform: translateY(6px); opacity: 0.8; }
   }
 
   /* ── Work ────────────────────────────────────────────────────────────── */
@@ -393,8 +399,4 @@ const featured = projects.filter(p => p.featured);
     to   { opacity: 1; }
   }
 
-  @keyframes scrollTick {
-    0%   { top: -100%; }
-    100% { top:  100%; }
-  }
 </style>
