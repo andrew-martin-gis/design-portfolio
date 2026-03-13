@@ -100,8 +100,10 @@
 
     // ── Cloud layer ──────────────────────────────────────────────────────
     const cloudMat = new THREE.MeshBasicMaterial({
+      color: 0xffffff,
       transparent: true,
       opacity: 0,
+      blending: THREE.AdditiveBlending,
       depthWrite: false,
     });
     const cloudMesh = new THREE.Mesh(
@@ -114,8 +116,8 @@
       `${base}8k_earth_clouds.jpg`,
       tex => {
         tex.colorSpace = THREE.SRGBColorSpace;
-        cloudMat.alphaMap    = tex;
-        cloudMat.opacity     = 1;
+        cloudMat.map     = tex;
+        cloudMat.opacity = 0.7;
         cloudMat.needsUpdate = true;
       },
       undefined,
@@ -162,7 +164,7 @@
     const atmFrag = `
       varying vec3 vN; varying vec3 vVP;
       uniform vec3 col; uniform float pw; uniform float co;
-      void main() { float f = pow(co - dot(vN, normalize(-vVP)), pw); gl_FragColor = vec4(col*f, f); }`;
+      void main() { float f = pow(max(0.0, co - dot(vN, normalize(-vVP))), pw); gl_FragColor = vec4(col*f, f); }`;
     const addAtm = (r, hex, pw, co, side) => scene.add(new THREE.Mesh(
       new THREE.SphereGeometry(r, 64, 64),
       new THREE.ShaderMaterial({
