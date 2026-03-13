@@ -32,13 +32,15 @@
     [ -1.29,  36.82],  [ 48.85,   2.35],  [ 39.91, 116.39],
   ];
 
+  // Matches Three.js SphereGeometry UV convention:
+  // u=0 → -x (lon=-180°), prime meridian → +x, west coast US (lon≈-120°) → +z (faces camera)
   function latLonToVec3(lat, lon, r = 1) {
-    const phi   = (90 - lat) * (Math.PI / 180);
-    const theta = (lon + 180) * (Math.PI / 180);
+    const latR = lat * (Math.PI / 180);
+    const lonR = lon * (Math.PI / 180);
     return new THREE.Vector3(
-      -r * Math.sin(phi) * Math.cos(theta),
-       r * Math.cos(phi),
-       r * Math.sin(phi) * Math.sin(theta)
+       r * Math.cos(latR) * Math.cos(lonR),   // x
+       r * Math.sin(latR),                    // y (north pole = +y)
+      -r * Math.cos(latR) * Math.sin(lonR)   // z (+z faces camera at initial orient.)
     );
   }
 
@@ -77,10 +79,22 @@
     tiltGroup.add(globeGroup);
     scene.add(tiltGroup);
 
-    // Inner dark sphere
+    // Inner sphere — night earth texture, dark fallback while loading
+    const earthMat = new THREE.MeshBasicMaterial({ color: 0x020818 });
+    new THREE.TextureLoader().load(
+      'https://unpkg.com/three-globe/example/img/earth-night.jpg',
+      tex => {
+        tex.colorSpace = THREE.SRGBColorSpace;
+        earthMat.map   = tex;
+        earthMat.color.set(0xffffff);
+        earthMat.needsUpdate = true;
+      },
+      undefined,
+      () => console.warn('Night earth texture unavailable — using fallback colour')
+    );
     globeGroup.add(new THREE.Mesh(
       new THREE.SphereGeometry(0.998, 64, 64),
-      new THREE.MeshBasicMaterial({ color: 0x020818 })
+      earthMat
     ));
 
     // Fibonacci dot cloud
@@ -92,7 +106,7 @@
       }
       const dg = new THREE.BufferGeometry();
       dg.setAttribute('position', new THREE.BufferAttribute(dp, 3));
-      globeGroup.add(new THREE.Points(dg, new THREE.PointsMaterial({ color:0x1d4ed8, size:0.009, transparent:true, opacity:1, sizeAttenuation:true })));
+      globeGroup.add(new THREE.Points(dg, new THREE.PointsMaterial({ color:0x60a5fa, size:0.007, transparent:true, opacity:0.22, sizeAttenuation:true, depthWrite:false })));
     }
 
     // ── Lat / lon grid ───────────────────────────────────────────────────
@@ -132,9 +146,9 @@
         transparent:true, blending:THREE.AdditiveBlending, depthWrite:false, side,
       })
     ));
-    addAtm(1.002, 0x1e6eff, 4.0, 0.65, THREE.FrontSide);
-    addAtm(1.28,  0x3b82f6, 2.2, 0.58, THREE.BackSide);
-    addAtm(1.55,  0x1e40af, 1.4, 0.50, THREE.BackSide);
+    addAtm(1.002, 0x1e6eff, 5.0, 0.60, THREE.FrontSide);  // tight rim glow
+    addAtm(1.15,  0x2563eb, 2.8, 0.52, THREE.BackSide);   // mid haze
+    addAtm(1.35,  0x1e3a8a, 1.8, 0.44, THREE.BackSide);   // outer corona (smaller radius)
 
     // ── Background hub arcs ──────────────────────────────────────────────
     const arcGroup  = new THREE.Group();
@@ -200,7 +214,7 @@
     // States: 'auto' | 'drag' | 'coast' | 'spinning'
     let intState  = 'auto';
     const vel     = { x: 0 };
-    const AUTO    = 0.0012;
+    const AUTO    = 0.0004;   // ~1 full revolution per 4 min
     let spinTgt   = null;
     let prevDrag  = { x:0, y:0 };
     let mdPos     = null;
@@ -213,7 +227,7 @@
     // ── Post-processing ──────────────────────────────────────────────────
     const composer = new EffectComposer(renderer);
     composer.addPass(new RenderPass(scene, camera));
-    composer.addPass(new UnrealBloomPass(new THREE.Vector2(W,H), 0.85, 0.55, 0.12));
+    composer.addPass(new UnrealBloomPass(new THREE.Vector2(W,H), 0.55, 0.4, 0.28));
 
     // Screen-space helpers
     const worldToScreen = mesh => {
