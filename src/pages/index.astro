@@ -1,137 +1,400 @@
 ---
-import Globe from '../components/Globe.svelte';
+import Base          from '../layouts/Base.astro';
+import Globe         from '../components/three/Globe.svelte';
+import Nav           from '../components/ui/Nav.svelte';
+import ProjectCard   from '../components/ui/ProjectCard.svelte';
+import SkillPill     from '../components/ui/SkillPill.svelte';
+import SectionTitle  from '../components/ui/SectionTitle.svelte';
+import { projects }  from '../data/projects.js';
+import { skills }    from '../data/skills.js';
+
+const featured = projects.filter(p => p.featured);
 ---
 
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Andrew Martin — GIS Portfolio</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400&display=swap" rel="stylesheet" />
-    <style>
-      *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-      html, body { width: 100%; height: 100%; overflow: hidden; background: #020818; }
+<Base>
+  <Nav client:load />
 
-      /* ── Globe canvas ── */
-      .scene {
-        position: fixed;
-        inset: 0;
-      }
-
-      /* ── Text overlay ── */
-      .overlay {
-        position: fixed;
-        inset: 0;
-        pointer-events: none;
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-end;
-        padding: clamp(2rem, 5vw, 4rem);
-        padding-bottom: clamp(2.5rem, 6vw, 5rem);
-      }
-
-      .accent-line {
-        width: 36px;
-        height: 1px;
-        background: #3b82f6;
-        margin-bottom: 1.4rem;
-        opacity: 0;
-        animation: fadeIn 0.8s ease forwards 0.4s;
-      }
-
-      h1.name {
-        font-family: 'Inter', system-ui, sans-serif;
-        font-size: clamp(2.4rem, 5.5vw, 5.2rem);
-        font-weight: 200;
-        letter-spacing: 0.04em;
-        color: #f0f6ff;
-        line-height: 1.08;
-        opacity: 0;
-        animation: slideUp 1s cubic-bezier(0.22, 1, 0.36, 1) forwards 0.55s;
-      }
-
-      p.role {
-        font-family: 'Inter', system-ui, sans-serif;
-        font-size: clamp(0.7rem, 1.4vw, 0.95rem);
-        font-weight: 300;
-        letter-spacing: 0.3em;
-        text-transform: uppercase;
-        color: #60a5fa;
-        margin-top: 0.8rem;
-        opacity: 0;
-        animation: slideUp 1s cubic-bezier(0.22, 1, 0.36, 1) forwards 0.75s;
-      }
-
-      /* Scroll indicator */
-      .scroll-hint {
-        margin-top: 2.8rem;
-        display: flex;
-        align-items: center;
-        gap: 0.8rem;
-        opacity: 0;
-        animation: fadeIn 1s ease forwards 1.6s;
-      }
-
-      .scroll-hint span {
-        font-family: 'Inter', system-ui, sans-serif;
-        font-size: 0.65rem;
-        letter-spacing: 0.22em;
-        text-transform: uppercase;
-        color: rgba(255, 255, 255, 0.22);
-      }
-
-      .scroll-line {
-        width: 1px;
-        height: 28px;
-        background: rgba(255, 255, 255, 0.12);
-        position: relative;
-        overflow: hidden;
-      }
-
-      .scroll-line::after {
-        content: '';
-        position: absolute;
-        top: -100%;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: #3b82f6;
-        animation: scrollTick 2.4s ease-in-out infinite 2s;
-      }
-
-      /* ── Animations ── */
-      @keyframes slideUp {
-        from { opacity: 0; transform: translateY(22px); }
-        to   { opacity: 1; transform: translateY(0); }
-      }
-
-      @keyframes fadeIn {
-        from { opacity: 0; }
-        to   { opacity: 1; }
-      }
-
-      @keyframes scrollTick {
-        0%   { top: -100%; }
-        100% { top:  100%; }
-      }
-    </style>
-  </head>
-  <body>
-    <div class="scene">
+  <!-- ═══════════════════════════════════════════════════════ HERO ══════ -->
+  <section id="hero" class="hero">
+    <!-- Three.js globe fills the hero -->
+    <div class="globe-wrap">
       <Globe client:only="svelte" />
     </div>
 
-    <div class="overlay">
+    <!-- Text overlay -->
+    <div class="hero-content">
       <div class="accent-line"></div>
-      <h1 class="name">Andrew Martin</h1>
-      <p class="role">GIS Designer &amp; Spatial Analyst</p>
+      <h1 class="hero-name">Andrew Martin</h1>
+      <p class="hero-role">GIS Designer &amp; Spatial Analyst</p>
       <div class="scroll-hint">
         <div class="scroll-line"></div>
         <span>Scroll to explore</span>
       </div>
     </div>
-  </body>
-</html>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════ WORK ═══════ -->
+  <section id="work" class="section">
+    <div class="container">
+      <SectionTitle label="Selected Work" title="Projects" client:visible />
+      <div class="project-grid">
+        {featured.map(p => (
+          <ProjectCard
+            slug={p.slug}
+            title={p.title}
+            subtitle={p.subtitle}
+            description={p.description}
+            tags={p.tags}
+            gradient={p.gradient}
+            year={p.year}
+          />
+        ))}
+      </div>
+
+      <!-- All-projects link -->
+      <div class="all-projects">
+        <a href="#work" class="ghost-btn">
+          View all {projects.length} projects
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+            <path d="M2 7h10M7 2l5 5-5 5" stroke="currentColor" stroke-width="1.5"
+                  stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════ SKILLS ══════ -->
+  <section id="skills" class="section skills-section">
+    <div class="container">
+      <SectionTitle label="Capabilities" title="Skills" client:visible />
+      <div class="skills-grid">
+        {skills.map(group => (
+          <div class="skill-group">
+            <h3 class="skill-category">{group.category}</h3>
+            <div class="pills">
+              {group.items.map(name => (
+                <SkillPill {name} />
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════ ABOUT ═══════ -->
+  <section id="about" class="section about-section">
+    <div class="container">
+      <SectionTitle label="Background" title="About" client:visible />
+      <div class="about-grid">
+        <div class="about-bio">
+          <p>
+            I'm a GIS designer based in Seattle, WA, combining spatial analysis with
+            interactive visualisation to make geographic data legible — for planners,
+            scientists, and the public alike.
+          </p>
+          <p>
+            My background spans environmental consulting, transit agencies, and independent
+            research. I care about equity, precision, and the aesthetics of well-made maps.
+          </p>
+          <a href="mailto:andrew@example.com" class="contact-link">
+            Get in touch →
+          </a>
+        </div>
+
+        <div class="about-stats">
+          <div class="stat">
+            <span class="stat-num">6+</span>
+            <span class="stat-label">Years experience</span>
+          </div>
+          <div class="stat">
+            <span class="stat-num">40+</span>
+            <span class="stat-label">Projects delivered</span>
+          </div>
+          <div class="stat">
+            <span class="stat-num">12</span>
+            <span class="stat-label">Tools mastered</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════ FOOTER ══════ -->
+  <footer class="footer">
+    <div class="container">
+      <p class="footer-copy">
+        &copy; {new Date().getFullYear()} Andrew Martin
+      </p>
+      <ul class="footer-links">
+        <li><a href="https://github.com/andrew-martin-gis" target="_blank" rel="noopener">GitHub</a></li>
+        <li><a href="https://linkedin.com/in/andrew-martin-gis" target="_blank" rel="noopener">LinkedIn</a></li>
+      </ul>
+    </div>
+  </footer>
+</Base>
+
+<style>
+  /* ── Hero ───────────────────────────────────────────────────────────── */
+  .hero {
+    position: relative;
+    height: 100svh;
+    min-height: 600px;
+    overflow: hidden;
+  }
+
+  .globe-wrap {
+    position: absolute;
+    inset: 0;
+  }
+
+  /* Ensure the Svelte Globe canvas fills its wrapper */
+  .globe-wrap :global(canvas) {
+    width: 100% !important;
+    height: 100% !important;
+    display: block;
+  }
+
+  .hero-content {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    padding: clamp(2rem, 5vw, 4.5rem);
+    pointer-events: none;
+  }
+
+  .accent-line {
+    width: 36px;
+    height: 1px;
+    background: var(--accent);
+    margin-bottom: 1.4rem;
+    opacity: 0;
+    animation: fadeIn 0.8s ease forwards 0.4s;
+  }
+
+  .hero-name {
+    opacity: 0;
+    animation: slideUp 1s cubic-bezier(0.22, 1, 0.36, 1) forwards 0.55s;
+  }
+
+  .hero-role {
+    font-family: var(--font);
+    font-size: clamp(0.7rem, 1.4vw, 0.95rem);
+    font-weight: 300;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--accent-light);
+    margin-top: 0.8rem;
+    opacity: 0;
+    animation: slideUp 1s cubic-bezier(0.22, 1, 0.36, 1) forwards 0.75s;
+  }
+
+  .scroll-hint {
+    margin-top: 2.8rem;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    opacity: 0;
+    animation: fadeIn 1s ease forwards 1.6s;
+  }
+
+  .scroll-hint span {
+    font-size: 0.65rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  .scroll-line {
+    width: 1px;
+    height: 28px;
+    background: rgba(255, 255, 255, 0.1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .scroll-line::after {
+    content: '';
+    position: absolute;
+    top: -100%;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--accent);
+    animation: scrollTick 2.4s ease-in-out infinite 2s;
+  }
+
+  /* ── Work ────────────────────────────────────────────────────────────── */
+  .project-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
+    gap: var(--gap);
+  }
+
+  .all-projects {
+    margin-top: 3rem;
+    display: flex;
+    justify-content: center;
+  }
+
+  .ghost-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.8rem;
+    font-weight: 400;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    padding: 0.65rem 1.5rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    transition: color var(--transition), border-color var(--transition);
+  }
+
+  .ghost-btn:hover {
+    color: var(--accent-light);
+    border-color: rgba(59, 130, 246, 0.4);
+  }
+
+  /* ── Skills ──────────────────────────────────────────────────────────── */
+  .skills-section {
+    background: linear-gradient(to bottom, transparent, var(--bg-surface) 20%, var(--bg-surface) 80%, transparent);
+  }
+
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 2.5rem;
+  }
+
+  .skill-category {
+    font-size: 0.72rem;
+    font-weight: 400;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent-light);
+    margin-bottom: 1rem;
+  }
+
+  .pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  /* ── About ───────────────────────────────────────────────────────────── */
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 4rem;
+    align-items: start;
+  }
+
+  .about-bio {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    max-width: 56ch;
+  }
+
+  .about-bio p {
+    font-size: 1.05rem;
+    font-weight: 300;
+    line-height: 1.75;
+    color: var(--text-secondary);
+  }
+
+  .contact-link {
+    display: inline-block;
+    font-size: 0.85rem;
+    font-weight: 400;
+    letter-spacing: 0.1em;
+    color: var(--accent-light);
+    margin-top: 0.5rem;
+    transition: letter-spacing var(--transition);
+  }
+
+  .contact-link:hover { letter-spacing: 0.18em; }
+
+  .about-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .stat { text-align: right; }
+
+  .stat-num {
+    display: block;
+    font-size: 2.5rem;
+    font-weight: 200;
+    color: var(--text-primary);
+    line-height: 1;
+  }
+
+  .stat-label {
+    font-size: 0.7rem;
+    font-weight: 400;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-top: 0.3rem;
+  }
+
+  @media (max-width: 640px) {
+    .about-grid { grid-template-columns: 1fr; }
+    .about-stats { flex-direction: row; justify-content: space-between; }
+    .stat { text-align: left; }
+  }
+
+  /* ── Footer ──────────────────────────────────────────────────────────── */
+  .footer {
+    padding-block: 2.5rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .footer .container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .footer-copy {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    letter-spacing: 0.05em;
+  }
+
+  .footer-links {
+    display: flex;
+    gap: 1.5rem;
+  }
+
+  .footer-links a {
+    font-size: 0.78rem;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    transition: color var(--transition);
+  }
+
+  .footer-links a:hover { color: var(--accent-light); }
+
+  /* ── Animations ──────────────────────────────────────────────────────── */
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(22px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+
+  @keyframes scrollTick {
+    0%   { top: -100%; }
+    100% { top:  100%; }
+  }
+</style>

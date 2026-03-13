@@ -1,0 +1,96 @@
+/* ── Design tokens ─────────────────────────────────────────────────────────── */
+:root {
+  /* Colour */
+  --bg:           #020818;
+  --bg-surface:   #080f1e;
+  --bg-elevated:  #0d1631;
+  --bg-card:      rgba(8, 15, 30, 0.85);
+  --border:       rgba(255, 255, 255, 0.07);
+  --border-hover: rgba(59, 130, 246, 0.4);
+
+  --text-primary:   #f0f6ff;
+  --text-secondary: #94a3b8;
+  --text-muted:     rgba(255, 255, 255, 0.28);
+
+  --accent:       #3b82f6;
+  --accent-light: #60a5fa;
+  --accent-glow:  rgba(59, 130, 246, 0.25);
+  --cyan:         #38bdf8;
+
+  /* Typography */
+  --font:      'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+
+  /* Spacing */
+  --section-pad: clamp(5rem, 10vw, 9rem);
+  --content-max: 1100px;
+  --gap:         clamp(1.5rem, 3vw, 2.5rem);
+
+  /* Misc */
+  --radius:     6px;
+  --radius-lg:  12px;
+  --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  --shadow:     0 0 40px rgba(0, 0, 0, 0.6);
+}
+
+/* ── Reset ─────────────────────────────────────────────────────────────────── */
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 5rem; /* offset for sticky nav */
+}
+
+body {
+  background: var(--bg);
+  color: var(--text-primary);
+  font-family: var(--font);
+  font-size: 1rem;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+img, video { display: block; max-width: 100%; }
+a { color: inherit; text-decoration: none; }
+button { cursor: pointer; border: none; background: none; font: inherit; }
+ul { list-style: none; }
+
+/* ── Typography ────────────────────────────────────────────────────────────── */
+h1, h2, h3, h4 {
+  font-weight: 200;
+  letter-spacing: 0.02em;
+  line-height: 1.1;
+}
+
+h1 { font-size: clamp(2.4rem, 5.5vw, 5.2rem); }
+h2 { font-size: clamp(2rem,   4vw,  3.5rem); }
+h3 { font-size: clamp(1rem,   2vw,  1.25rem); font-weight: 400; }
+
+/* ── Utility ────────────────────────────────────────────────────────────────── */
+.container {
+  width: 100%;
+  max-width: var(--content-max);
+  margin-inline: auto;
+  padding-inline: clamp(1.25rem, 5vw, 3rem);
+}
+
+.section {
+  padding-block: var(--section-pad);
+}
+
+/* Screen-reader only */
+.sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

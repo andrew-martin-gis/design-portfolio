@@ -1,0 +1,296 @@
+---
+import Base         from '../../layouts/Base.astro';
+import Nav          from '../../components/ui/Nav.svelte';
+import { projects } from '../../data/projects.js';
+
+export function getStaticPaths() {
+  return projects.map(p => ({ params: { slug: p.slug }, props: { project: p } }));
+}
+
+const { project } = Astro.props;
+const { title, subtitle, description, tags, gradient, year, details } = project;
+
+const base = import.meta.env.BASE_URL;
+---
+
+<Base title={`${title} — Andrew Martin`} description={description}>
+  <Nav client:load />
+
+  <!-- Hero band -->
+  <div class="project-hero" style={`background: ${gradient};`}>
+    <div class="container">
+      <a href={`${base}#work`} class="back-link">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+          <path d="M12 7H2M7 12L2 7l5-5" stroke="currentColor" stroke-width="1.5"
+                stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        All projects
+      </a>
+
+      <p class="project-subtitle">{subtitle}</p>
+      <h1 class="project-title">{title}</h1>
+
+      <ul class="project-tags">
+        {tags.map(tag => <li>{tag}</li>)}
+      </ul>
+    </div>
+  </div>
+
+  <!-- Body -->
+  <div class="project-body container">
+    <!-- Summary -->
+    <section class="detail-block">
+      <p class="summary">{description}</p>
+    </section>
+
+    {details && (
+      <>
+        <!-- Challenge / Approach / Outcome -->
+        <div class="detail-grid">
+          {details.challenge && (
+            <div class="detail-card">
+              <h3>Challenge</h3>
+              <p>{details.challenge}</p>
+            </div>
+          )}
+          {details.approach && (
+            <div class="detail-card">
+              <h3>Approach</h3>
+              <p>{details.approach}</p>
+            </div>
+          )}
+          {details.outcome && (
+            <div class="detail-card">
+              <h3>Outcome</h3>
+              <p>{details.outcome}</p>
+            </div>
+          )}
+        </div>
+
+        <!-- Tools used -->
+        {details.tools && (
+          <section class="detail-block tools-block">
+            <h3 class="tools-heading">Tools &amp; Stack</h3>
+            <ul class="tools-list">
+              {details.tools.map(t => <li>{t}</li>)}
+            </ul>
+          </section>
+        )}
+      </>
+    )}
+
+    <!-- Navigation between projects -->
+    <nav class="project-nav">
+      {(() => {
+        const idx  = projects.findIndex(p => p.slug === project.slug);
+        const prev = projects[idx - 1];
+        const next = projects[idx + 1];
+        return (
+          <>
+            {prev
+              ? <a href={`${base}projects/${prev.slug}`} class="project-nav-link prev">
+                  <span class="nav-dir">← Previous</span>
+                  <span class="nav-title">{prev.title}</span>
+                </a>
+              : <span />
+            }
+            {next
+              ? <a href={`${base}projects/${next.slug}`} class="project-nav-link next">
+                  <span class="nav-dir">Next →</span>
+                  <span class="nav-title">{next.title}</span>
+                </a>
+              : <span />
+            }
+          </>
+        );
+      })()}
+    </nav>
+  </div>
+</Base>
+
+<style>
+  /* ── Hero band ─────────────────────────────────────────────────────── */
+  .project-hero {
+    padding-top: 8rem;
+    padding-bottom: 4rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .project-hero::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 120px;
+    background: linear-gradient(to bottom, transparent, var(--bg));
+    pointer-events: none;
+  }
+
+  .project-hero .container {
+    position: relative;
+    z-index: 1;
+  }
+
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 400;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 2rem;
+    transition: color var(--transition);
+  }
+
+  .back-link:hover { color: var(--accent-light); }
+
+  .project-subtitle {
+    font-size: 0.72rem;
+    font-weight: 400;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--accent-light);
+    margin-bottom: 0.75rem;
+  }
+
+  .project-title {
+    font-size: clamp(2rem, 5vw, 4rem);
+    font-weight: 200;
+    letter-spacing: 0.02em;
+    color: var(--text-primary);
+    max-width: 18ch;
+  }
+
+  .project-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1.5rem;
+    list-style: none;
+  }
+
+  .project-tags li {
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    padding: 0.25rem 0.65rem;
+  }
+
+  /* ── Body ──────────────────────────────────────────────────────────── */
+  .project-body {
+    padding-block: 4rem 6rem;
+  }
+
+  .detail-block {
+    margin-bottom: 3.5rem;
+  }
+
+  .summary {
+    font-size: 1.1rem;
+    font-weight: 300;
+    line-height: 1.8;
+    color: var(--text-secondary);
+    max-width: 70ch;
+  }
+
+  /* ── Detail cards grid ─────────────────────────────────────────────── */
+  .detail-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 3.5rem;
+  }
+
+  .detail-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1.75rem;
+  }
+
+  .detail-card h3 {
+    font-size: 0.72rem;
+    font-weight: 400;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent-light);
+    margin-bottom: 0.85rem;
+  }
+
+  .detail-card p {
+    font-size: 0.9rem;
+    font-weight: 300;
+    line-height: 1.7;
+    color: var(--text-secondary);
+  }
+
+  /* ── Tools ─────────────────────────────────────────────────────────── */
+  .tools-heading {
+    font-size: 0.72rem;
+    font-weight: 400;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent-light);
+    margin-bottom: 1rem;
+  }
+
+  .tools-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    list-style: none;
+  }
+
+  .tools-list li {
+    font-size: 0.82rem;
+    font-weight: 300;
+    color: var(--text-secondary);
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    padding: 0.35rem 0.9rem;
+  }
+
+  /* ── Project navigation ────────────────────────────────────────────── */
+  .project-nav {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 5rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .project-nav-link {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    max-width: 40%;
+    transition: color var(--transition);
+  }
+
+  .project-nav-link.next { align-items: flex-end; text-align: right; }
+
+  .nav-dir {
+    font-size: 0.7rem;
+    font-weight: 400;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  .nav-title {
+    font-size: 0.95rem;
+    font-weight: 300;
+    color: var(--text-secondary);
+    transition: color var(--transition);
+  }
+
+  .project-nav-link:hover .nav-title { color: var(--accent-light); }
+</style>
