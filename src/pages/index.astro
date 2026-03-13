@@ -5,8 +5,10 @@ import Nav           from '../components/ui/Nav.svelte';
 import ProjectCard   from '../components/ui/ProjectCard.svelte';
 import SkillPill     from '../components/ui/SkillPill.svelte';
 import SectionTitle  from '../components/ui/SectionTitle.svelte';
+import StatCounter   from '../components/ui/StatCounter.svelte';
 import { projects }  from '../data/projects.js';
 import { skills }    from '../data/skills.js';
+import { experience } from '../data/experience.js';
 
 const featured = projects.filter(p => p.featured);
 ---
@@ -16,21 +18,16 @@ const featured = projects.filter(p => p.featured);
 
   <!-- ═══════════════════════════════════════════════════════ HERO ══════ -->
   <section id="hero" class="hero">
-    <!-- Three.js globe fills the hero -->
     <div class="globe-wrap">
       <Globe client:only="svelte" />
     </div>
 
-    <!-- Text overlay -->
     <div class="hero-content">
       <div class="accent-line"></div>
       <h1 class="hero-name">Andrew Martin</h1>
-      <p class="hero-role">GIS Designer &amp; Spatial Analyst</p>
-
-      <!-- Hint: click a glowing marker -->
+      <p class="hero-role">Digital Map Designer &amp; GIS Analyst</p>
       <p class="hero-hint">Click a marker to explore projects</p>
 
-      <!-- Scroll arrow -->
       <a href="#work" class="scroll-arrow" aria-label="Scroll to work">
         <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
           <path d="M10 3v14M4 11l6 6 6-6" stroke="currentColor" stroke-width="1.5"
@@ -54,11 +51,12 @@ const featured = projects.filter(p => p.featured);
             tags={p.tags}
             gradient={p.gradient}
             year={p.year}
+            type={p.type}
+            client:visible
           />
         ))}
       </div>
 
-      <!-- All-projects link -->
       <div class="all-projects">
         <a href="#work" class="ghost-btn">
           View all {projects.length} projects
@@ -80,10 +78,40 @@ const featured = projects.filter(p => p.featured);
           <div class="skill-group">
             <h3 class="skill-category">{group.category}</h3>
             <div class="pills">
-              {group.items.map(name => (
-                <SkillPill {name} />
+              {group.items.map((item, i) => (
+                <SkillPill
+                  name={item.name}
+                  context={item.context}
+                  delay={i * 55}
+                  client:visible
+                />
               ))}
             </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════ EXPERIENCE ══ -->
+  <section id="experience" class="section">
+    <div class="container">
+      <SectionTitle label="Background" title="Experience" client:visible />
+      <div class="timeline">
+        {experience.map((entry, idx) => (
+          <div class={`timeline-entry ${idx % 2 === 0 ? 'left' : 'right'}`}>
+            <div class="timeline-card">
+              <span class="entry-period">{entry.period}</span>
+              <h3 class="entry-role">{entry.role}</h3>
+              <p class="entry-org">{entry.org}</p>
+              <ul class="entry-bullets">
+                {entry.bullets.map(b => <li>{b}</li>)}
+              </ul>
+            </div>
+            <div class="timeline-node">
+              <span class="node-icon">{entry.type === 'work' ? '◈' : '◇'}</span>
+            </div>
+            <div class="timeline-spacer"></div>
           </div>
         ))}
       </div>
@@ -93,36 +121,37 @@ const featured = projects.filter(p => p.featured);
   <!-- ═══════════════════════════════════════════════════════ ABOUT ═══════ -->
   <section id="about" class="section about-section">
     <div class="container">
-      <SectionTitle label="Background" title="About" client:visible />
+      <SectionTitle label="Who I am" title="About" client:visible />
       <div class="about-grid">
+
+        <div class="about-avatar-col">
+          <div class="avatar">
+            <span class="avatar-initials">AM</span>
+          </div>
+        </div>
+
         <div class="about-bio">
           <p>
-            I'm a GIS designer based in Seattle, WA, combining spatial analysis with
-            interactive visualisation to make geographic data legible — for planners,
-            scientists, and the public alike.
+            I'm a digital map designer at Gozio Health, where I've built over 1,000
+            indoor wayfinding maps for healthcare systems across the United States.
+            My background is in applied geography — I care about spatial precision,
+            clean cartography, and making geographic data legible for the people who
+            depend on it.
           </p>
           <p>
-            My background spans environmental consulting, transit agencies, and independent
-            research. I care about equity, precision, and the aesthetics of well-made maps.
+            Outside of indoor mapping I work on environmental GIS, transit equity,
+            and data visualisation projects that sit at the edge of spatial analysis
+            and interactive design.
           </p>
-          <a href="mailto:andrew@example.com" class="contact-link">
+          <a href="mailto:andrew.martin.gis@outlook.com" class="contact-link">
             Get in touch →
           </a>
         </div>
 
         <div class="about-stats">
-          <div class="stat">
-            <span class="stat-num">6+</span>
-            <span class="stat-label">Years experience</span>
-          </div>
-          <div class="stat">
-            <span class="stat-num">40+</span>
-            <span class="stat-label">Projects delivered</span>
-          </div>
-          <div class="stat">
-            <span class="stat-num">12</span>
-            <span class="stat-label">Tools mastered</span>
-          </div>
+          <StatCounter value={1000} suffix="+" label="Indoor maps designed" comma={true} client:visible />
+          <StatCounter value={4}    suffix=" yrs" label="At Gozio Health"   client:visible />
+          <StatCounter value={50}   suffix="+"    label="Training guide sections" client:visible />
         </div>
       </div>
     </div>
@@ -137,6 +166,7 @@ const featured = projects.filter(p => p.featured);
       <ul class="footer-links">
         <li><a href="https://github.com/andrew-martin-gis" target="_blank" rel="noopener">GitHub</a></li>
         <li><a href="https://linkedin.com/in/andrew-martin-gis" target="_blank" rel="noopener">LinkedIn</a></li>
+        <li><a href="mailto:andrew.martin.gis@outlook.com">Email</a></li>
       </ul>
     </div>
   </footer>
@@ -156,7 +186,6 @@ const featured = projects.filter(p => p.featured);
     inset: 0;
   }
 
-  /* Ensure the Svelte Globe canvas fills its wrapper */
   .globe-wrap :global(canvas) {
     width: 100% !important;
     height: 100% !important;
@@ -181,7 +210,6 @@ const featured = projects.filter(p => p.featured);
   }
 
   .hero-name {
-    /* mix-blend-mode: screen lets the globe "show through" the text */
     mix-blend-mode: screen;
     opacity: 0;
     animation: slideUp 1s cubic-bezier(0.22, 1, 0.36, 1) forwards 0.55s;
@@ -211,7 +239,6 @@ const featured = projects.filter(p => p.featured);
     animation: fadeIn 1s ease forwards 1.2s;
   }
 
-  /* Pulsing scroll arrow */
   .scroll-arrow {
     display: inline-flex;
     align-items: center;
@@ -290,12 +317,208 @@ const featured = projects.filter(p => p.featured);
     gap: 0.5rem;
   }
 
+  /* ── Experience ──────────────────────────────────────────────────────── */
+  .timeline {
+    position: relative;
+  }
+
+  /* Central spine */
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: linear-gradient(to bottom, transparent, var(--border) 10%, var(--border) 90%, transparent);
+    transform: translateX(-50%);
+  }
+
+  .timeline-entry {
+    display: grid;
+    grid-template-columns: 1fr 2.5rem 1fr;
+    align-items: start;
+    padding-bottom: 3rem;
+  }
+
+  /* Card: left entries go in col 1, right entries go in col 3 */
+  .timeline-entry.left  .timeline-card    { grid-column: 1; grid-row: 1; text-align: right; }
+  .timeline-entry.right .timeline-card    { grid-column: 3; grid-row: 1; }
+  .timeline-entry.left  .timeline-node   { grid-column: 2; grid-row: 1; }
+  .timeline-entry.right .timeline-node   { grid-column: 2; grid-row: 1; }
+  .timeline-entry.left  .timeline-spacer  { grid-column: 3; grid-row: 1; }
+  .timeline-entry.right .timeline-spacer  { grid-column: 1; grid-row: 1; }
+
+  .timeline-node {
+    display: flex;
+    justify-content: center;
+    padding-top: 1.1rem;
+    z-index: 1;
+  }
+
+  .node-icon {
+    font-size: 0.9rem;
+    color: var(--accent);
+    background: var(--bg);
+    display: block;
+    padding: 3px;
+    line-height: 1;
+  }
+
+  .timeline-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem 1.75rem;
+    transition: border-color var(--transition), box-shadow var(--transition);
+  }
+
+  .timeline-card:hover {
+    border-color: var(--border-hover);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  }
+
+  .entry-period {
+    display: block;
+    font-size: 0.68rem;
+    font-weight: 400;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent-light);
+    margin-bottom: 0.5rem;
+  }
+
+  .entry-role {
+    font-size: 1.05rem;
+    font-weight: 400;
+    color: var(--text-primary);
+    letter-spacing: 0.01em;
+    margin-bottom: 0.2rem;
+  }
+
+  .entry-org {
+    font-size: 0.82rem;
+    font-weight: 300;
+    color: var(--text-muted);
+    letter-spacing: 0.06em;
+    margin-bottom: 1rem;
+  }
+
+  .entry-bullets {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .entry-bullets li {
+    font-size: 0.875rem;
+    font-weight: 300;
+    line-height: 1.65;
+    color: var(--text-secondary);
+    padding-left: 1.1rem;
+    position: relative;
+  }
+
+  .entry-bullets li::before {
+    content: '—';
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+    font-size: 0.7rem;
+    top: 0.18em;
+  }
+
+  /* Right-align left-side bullets */
+  .timeline-entry.left .entry-bullets li {
+    padding-left: 0;
+    padding-right: 1.1rem;
+  }
+
+  .timeline-entry.left .entry-bullets li::before {
+    left: auto;
+    right: 0;
+  }
+
+  @media (max-width: 720px) {
+    .timeline::before { left: 0.75rem; }
+
+    .timeline-entry {
+      grid-template-columns: 1.5rem 1fr;
+      gap: 0 1rem;
+    }
+
+    .timeline-entry.left  .timeline-card,
+    .timeline-entry.right .timeline-card    { grid-column: 2; grid-row: 1; text-align: left; }
+    .timeline-entry.left  .timeline-node,
+    .timeline-entry.right .timeline-node   { grid-column: 1; grid-row: 1; }
+    .timeline-entry.left  .timeline-spacer,
+    .timeline-entry.right .timeline-spacer  { display: none; }
+
+    .timeline-entry.left .entry-bullets li {
+      padding-left: 1.1rem;
+      padding-right: 0;
+    }
+    .timeline-entry.left .entry-bullets li::before {
+      left: 0;
+      right: auto;
+    }
+  }
+
   /* ── About ───────────────────────────────────────────────────────────── */
+  .about-section {
+    background: linear-gradient(to bottom, transparent, var(--bg-surface) 10%, var(--bg-surface) 90%, transparent);
+  }
+
   .about-grid {
     display: grid;
-    grid-template-columns: 1fr auto;
-    gap: 4rem;
+    grid-template-columns: auto 1fr auto;
+    gap: 3rem 4rem;
     align-items: start;
+  }
+
+  .about-avatar-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .avatar {
+    width: 96px;
+    height: 96px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(59, 130, 246, 0.05));
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    display: grid;
+    place-items: center;
+    position: relative;
+    animation: avatarPulse 4s ease-in-out infinite;
+  }
+
+  .avatar::before {
+    content: '';
+    position: absolute;
+    inset: -6px;
+    border-radius: 50%;
+    border: 1px solid rgba(59, 130, 246, 0.15);
+    animation: avatarRing 4s ease-in-out infinite 0.5s;
+  }
+
+  @keyframes avatarPulse {
+    0%, 100% { border-color: rgba(59, 130, 246, 0.3); }
+    50%       { border-color: rgba(59, 130, 246, 0.55); }
+  }
+
+  @keyframes avatarRing {
+    0%, 100% { opacity: 0.4; transform: scale(1); }
+    50%       { opacity: 1;   transform: scale(1.04); }
+  }
+
+  .avatar-initials {
+    font-size: 1.4rem;
+    font-weight: 200;
+    letter-spacing: 0.1em;
+    color: var(--accent-light);
   }
 
   .about-bio {
@@ -330,29 +553,17 @@ const featured = projects.filter(p => p.featured);
     gap: 2rem;
   }
 
-  .stat { text-align: right; }
-
-  .stat-num {
-    display: block;
-    font-size: 2.5rem;
-    font-weight: 200;
-    color: var(--text-primary);
-    line-height: 1;
-  }
-
-  .stat-label {
-    font-size: 0.7rem;
-    font-weight: 400;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--text-muted);
-    margin-top: 0.3rem;
-  }
-
-  @media (max-width: 640px) {
-    .about-grid { grid-template-columns: 1fr; }
-    .about-stats { flex-direction: row; justify-content: space-between; }
-    .stat { text-align: left; }
+  @media (max-width: 900px) {
+    .about-grid {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+    .about-avatar-col { align-items: flex-start; }
+    .about-stats {
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+    }
   }
 
   /* ── Footer ──────────────────────────────────────────────────────────── */
@@ -398,5 +609,4 @@ const featured = projects.filter(p => p.featured);
     from { opacity: 0; }
     to   { opacity: 1; }
   }
-
 </style>

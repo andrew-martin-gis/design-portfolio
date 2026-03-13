@@ -2,9 +2,10 @@
   import { onMount } from 'svelte';
 
   const links = [
-    { href: '#work',   label: 'Work'   },
-    { href: '#skills', label: 'Skills' },
-    { href: '#about',  label: 'About'  },
+    { href: '#work',       label: 'Work'       },
+    { href: '#skills',     label: 'Skills'     },
+    { href: '#experience', label: 'Experience' },
+    { href: '#about',      label: 'About'      },
   ];
 
   let active     = '';
@@ -51,7 +52,7 @@
 
     <!-- CTA -->
     <a
-      href="mailto:andrew@example.com"
+      href="mailto:andrew.martin.gis@outlook.com"
       class="cta"
       aria-label="Get in touch"
     >
