@@ -7,6 +7,8 @@
   import { RenderPass }      from 'three/examples/jsm/postprocessing/RenderPass.js';
   import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
   import { projects } from '../../data/projects.js';
+  import earthNightUrl from '../assets/earth-night.jpg';
+  import cloudsUrl     from '../assets/8k_earth_clouds.jpg';
 
   let wrap;
   let canvas;
@@ -83,7 +85,7 @@
     // Inner sphere — night earth texture, dark fallback while loading
     const earthMat = new THREE.MeshBasicMaterial({ color: 0x020818 });
     new THREE.TextureLoader().load(
-      `${base}earth-night.jpg`,
+      earthNightUrl,
       tex => {
         tex.colorSpace = THREE.SRGBColorSpace;
         earthMat.map   = tex;
@@ -113,7 +115,7 @@
     globeGroup.add(cloudMesh);
 
     new THREE.TextureLoader().load(
-      `${base}8k_earth_clouds.jpg`,
+      cloudsUrl,
       tex => {
         tex.colorSpace = THREE.SRGBColorSpace;
         cloudMat.alphaMap = tex;
