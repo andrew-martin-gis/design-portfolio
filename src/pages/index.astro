@@ -42,7 +42,7 @@ const featured = projects.filter(p => p.featured);
     <div class="container">
       <SectionTitle label="Selected Work" title="Projects" client:visible />
       <div class="project-grid">
-        {featured.map(p => (
+        {featured.map((p, i) => (
           <ProjectCard
             slug={p.slug}
             title={p.title}
@@ -52,6 +52,7 @@ const featured = projects.filter(p => p.featured);
             gradient={p.gradient}
             year={p.year}
             type={p.type}
+            index={i}
             client:visible
           />
         ))}
@@ -599,6 +600,18 @@ const featured = projects.filter(p => p.featured);
 
   .footer-links a:hover { color: var(--accent-light); }
 
+  /* ── Timeline scroll reveal ──────────────────────────────────────────── */
+  .timeline-entry .timeline-card {
+    opacity: 0;
+    transition: opacity 0.65s ease, transform 0.65s ease;
+  }
+  .timeline-entry.left  .timeline-card { transform: translateX(-28px); }
+  .timeline-entry.right .timeline-card { transform: translateX( 28px); }
+  .timeline-entry.visible .timeline-card {
+    opacity: 1;
+    transform: none;
+  }
+
   /* ── Animations ──────────────────────────────────────────────────────── */
   @keyframes slideUp {
     from { opacity: 0; transform: translateY(22px); }
@@ -610,3 +623,21 @@ const featured = projects.filter(p => p.featured);
     to   { opacity: 1; }
   }
 </style>
+
+<script>
+  function initTimeline() {
+    const entries = document.querySelectorAll('.timeline-entry:not(.visible)');
+    if (!entries.length) return;
+    const obs = new IntersectionObserver((items) => {
+      items.forEach((item, i) => {
+        if (item.isIntersecting) {
+          setTimeout(() => item.target.classList.add('visible'), i * 120);
+          obs.unobserve(item.target);
+        }
+      });
+    }, { threshold: 0.15 });
+    entries.forEach(el => obs.observe(el));
+  }
+  // Fires on initial load AND after every client-side page navigation
+  document.addEventListener('astro:page-load', initTimeline);
+</script>

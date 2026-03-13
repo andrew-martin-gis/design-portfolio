@@ -1,5 +1,7 @@
 ---
-import { ClientRouter } from 'astro:transitions';
+import { ClientRouter }  from 'astro:transitions';
+import Cursor            from '../components/ui/Cursor.svelte';
+import ScrollProgress    from '../components/ui/ScrollProgress.svelte';
 import '../styles/global.css';
 
 interface Props {
@@ -9,8 +11,8 @@ interface Props {
 }
 
 const {
-  title       = 'Andrew Martin — GIS Portfolio',
-  description = 'GIS designer and spatial analyst building data-driven maps, tools, and visualisations.',
+  title       = 'Andrew Martin — Digital Map Designer',
+  description = 'Digital map designer and GIS analyst at Gozio Health — building indoor wayfinding maps, spatial analysis tools, and interactive visualisations.',
 } = Astro.props;
 
 const base = import.meta.env.BASE_URL;
@@ -40,6 +42,8 @@ const base = import.meta.env.BASE_URL;
     <ClientRouter />
   </head>
   <body>
+    <ScrollProgress client:only="svelte" />
+    <Cursor        client:only="svelte" />
     <slot />
   </body>
 </html>

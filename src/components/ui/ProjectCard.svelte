@@ -1,7 +1,9 @@
 <!--
-  Props: slug, title, subtitle, description, tags, gradient, year, type
+  Props: slug, title, subtitle, description, tags, gradient, year, type, index
 -->
 <script>
+  import { onMount } from 'svelte';
+
   export let slug        = '';
   export let title       = '';
   export let subtitle    = '';
@@ -10,14 +12,28 @@
   export let gradient    = 'linear-gradient(135deg, #0d1631, #020818)';
   export let year        = '';
   export let type        = '';
+  export let index       = 0;
 
   const base = import.meta.env.BASE_URL;
   const href = `${base}projects/${slug}`;
 
-  // 3D tilt on mouse
   let card;
   let rx = 0, ry = 0;
+  let revealed = false;
 
+  // Scroll-triggered reveal with stagger
+  onMount(() => {
+    const obs = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => { revealed = true; }, index * 110);
+        obs.disconnect();
+      }
+    }, { threshold: 0.1 });
+    obs.observe(card);
+    return () => obs.disconnect();
+  });
+
+  // 3D tilt on mouse
   function onMove(e) {
     const rect = card.getBoundingClientRect();
     const cx = rect.left + rect.width  / 2;
@@ -31,14 +47,18 @@
 
 <article
   class="card"
+  class:revealed
   bind:this={card}
   on:mousemove={onMove}
   on:mouseleave={onLeave}
   style="--rx:{rx}deg; --ry:{ry}deg"
 >
   <a {href}>
-    <!-- Visual header -->
-    <div class="card-header" style={`background: ${gradient};`}>
+    <!-- Gradient header — view-transition morphs this into the project hero -->
+    <div
+      class="card-header"
+      style={`background: ${gradient}; view-transition-name: hero-${slug};`}
+    >
       <span class="card-year">{year}</span>
       {#if type}
         <span class="card-type">{type}</span>
@@ -51,14 +71,12 @@
       <h3 class="card-title">{title}</h3>
       <p class="card-desc">{description}</p>
 
-      <!-- Tags -->
       <ul class="card-tags">
         {#each tags as tag}
           <li>{tag}</li>
         {/each}
       </ul>
 
-      <!-- Link affordance -->
       <span class="card-link">
         View case study
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
@@ -71,20 +89,42 @@
 </article>
 
 <style>
+  /* ── Before reveal: hidden, shifted down ── */
+  .card:not(.revealed) {
+    opacity: 0;
+    transform:
+      perspective(700px)
+      rotateX(0deg)
+      rotateY(0deg)
+      translateY(28px);
+    transition:
+      opacity       0.65s ease,
+      transform     0.65s ease,
+      border-color  var(--transition),
+      box-shadow    var(--transition);
+  }
+
+  /* ── After reveal: visible with fast tilt ── */
+  .card.revealed {
+    opacity: 1;
+    transform:
+      perspective(700px)
+      rotateX(var(--rx, 0deg))
+      rotateY(var(--ry, 0deg));
+    transition:
+      transform     0.08s ease,
+      border-color  var(--transition),
+      box-shadow    var(--transition);
+  }
+
   .card {
     background: var(--bg-card);
     border: 1px solid var(--border);
     border-radius: var(--radius-lg);
     overflow: hidden;
-    transform:
-      perspective(700px)
-      rotateX(var(--rx, 0deg))
-      rotateY(var(--ry, 0deg));
-    transition: border-color var(--transition), box-shadow var(--transition),
-                transform 0.08s ease;
   }
 
-  .card:hover {
+  .card.revealed:hover {
     border-color: var(--border-hover);
     box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(59, 130, 246, 0.12);
   }
@@ -96,7 +136,7 @@
     height: 100%;
   }
 
-  /* ── Header image area ── */
+  /* ── Header ── */
   .card-header {
     height: 180px;
     position: relative;
@@ -208,7 +248,7 @@
     transition: opacity var(--transition), transform var(--transition);
   }
 
-  .card:hover .card-link {
+  .card.revealed:hover .card-link {
     opacity: 1;
     transform: translateX(0);
   }
