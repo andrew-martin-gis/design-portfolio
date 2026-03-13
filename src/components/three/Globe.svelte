@@ -7,8 +7,8 @@
   import { RenderPass }      from 'three/examples/jsm/postprocessing/RenderPass.js';
   import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
   import { projects } from '../../data/projects.js';
-  import earthNightUrl from '../assets/earth-night.jpg';
-  import cloudsUrl     from '../assets/8k_earth_clouds.jpg';
+  import earthNightUrl from '../../assets/earth-night.jpg';
+  import cloudsUrl     from '../../assets/8k_earth_clouds.jpg';
 
   let wrap;
   let canvas;
