@@ -83,7 +83,7 @@
     // Inner sphere — night earth texture, dark fallback while loading
     const earthMat = new THREE.MeshBasicMaterial({ color: 0x020818 });
     new THREE.TextureLoader().load(
-      `${base}earth-night.jpg`,
+      `${base}8k_earth_nightmap.jpg`,
       tex => {
         tex.colorSpace = THREE.SRGBColorSpace;
         earthMat.map   = tex;
@@ -97,6 +97,30 @@
       new THREE.SphereGeometry(0.998, 64, 64),
       earthMat
     ));
+
+    // ── Cloud layer ──────────────────────────────────────────────────────
+    const cloudMat = new THREE.MeshBasicMaterial({
+      transparent: true,
+      opacity: 0,
+      depthWrite: false,
+    });
+    const cloudMesh = new THREE.Mesh(
+      new THREE.SphereGeometry(1.010, 64, 64),
+      cloudMat
+    );
+    globeGroup.add(cloudMesh);
+
+    new THREE.TextureLoader().load(
+      `${base}8k_earth_clouds.jpg`,
+      tex => {
+        tex.colorSpace = THREE.SRGBColorSpace;
+        cloudMat.alphaMap    = tex;
+        cloudMat.opacity     = 1;
+        cloudMat.needsUpdate = true;
+      },
+      undefined,
+      () => console.warn('Cloud texture unavailable — cloud layer hidden')
+    );
 
     // Fibonacci dot cloud
     {
@@ -260,6 +284,8 @@
         globeGroup.rotation.y += diff * 0.055;
         if (Math.abs(diff) < 0.008) { globeGroup.rotation.y = spinTgt; spinTgt = null; intState = 'auto'; }
       }
+
+      cloudMesh.rotation.y += 0.00008;
 
       // Mouse parallax on tiltGroup
       tiltLag.x += (mouse.ny *  0.12 - tiltLag.x) * 0.04;
