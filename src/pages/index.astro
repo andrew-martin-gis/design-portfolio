@@ -1,5 +1,5 @@
 ---
-// Phase 1.1 — blank canvas, deployment smoke test
+import Globe from '../components/Globe.svelte';
 ---
 
 <!DOCTYPE html>
@@ -8,26 +8,130 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Andrew Martin — GIS Portfolio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400&display=swap" rel="stylesheet" />
     <style>
-      * { margin: 0; padding: 0; box-sizing: border-box; }
-      body {
-        background: #0a0a0f;
-        color: #e0e0e0;
-        font-family: 'Inter', system-ui, sans-serif;
-        display: grid;
-        place-items: center;
-        min-height: 100vh;
+      *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 100%; height: 100%; overflow: hidden; background: #020818; }
+
+      /* ── Globe canvas ── */
+      .scene {
+        position: fixed;
+        inset: 0;
       }
-      .status {
-        text-align: center;
-        opacity: 0.5;
-        font-size: 0.9rem;
-        letter-spacing: 0.15em;
+
+      /* ── Text overlay ── */
+      .overlay {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        padding: clamp(2rem, 5vw, 4rem);
+        padding-bottom: clamp(2.5rem, 6vw, 5rem);
+      }
+
+      .accent-line {
+        width: 36px;
+        height: 1px;
+        background: #3b82f6;
+        margin-bottom: 1.4rem;
+        opacity: 0;
+        animation: fadeIn 0.8s ease forwards 0.4s;
+      }
+
+      h1.name {
+        font-family: 'Inter', system-ui, sans-serif;
+        font-size: clamp(2.4rem, 5.5vw, 5.2rem);
+        font-weight: 200;
+        letter-spacing: 0.04em;
+        color: #f0f6ff;
+        line-height: 1.08;
+        opacity: 0;
+        animation: slideUp 1s cubic-bezier(0.22, 1, 0.36, 1) forwards 0.55s;
+      }
+
+      p.role {
+        font-family: 'Inter', system-ui, sans-serif;
+        font-size: clamp(0.7rem, 1.4vw, 0.95rem);
+        font-weight: 300;
+        letter-spacing: 0.3em;
         text-transform: uppercase;
+        color: #60a5fa;
+        margin-top: 0.8rem;
+        opacity: 0;
+        animation: slideUp 1s cubic-bezier(0.22, 1, 0.36, 1) forwards 0.75s;
+      }
+
+      /* Scroll indicator */
+      .scroll-hint {
+        margin-top: 2.8rem;
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+        opacity: 0;
+        animation: fadeIn 1s ease forwards 1.6s;
+      }
+
+      .scroll-hint span {
+        font-family: 'Inter', system-ui, sans-serif;
+        font-size: 0.65rem;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.22);
+      }
+
+      .scroll-line {
+        width: 1px;
+        height: 28px;
+        background: rgba(255, 255, 255, 0.12);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .scroll-line::after {
+        content: '';
+        position: absolute;
+        top: -100%;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: #3b82f6;
+        animation: scrollTick 2.4s ease-in-out infinite 2s;
+      }
+
+      /* ── Animations ── */
+      @keyframes slideUp {
+        from { opacity: 0; transform: translateY(22px); }
+        to   { opacity: 1; transform: translateY(0); }
+      }
+
+      @keyframes fadeIn {
+        from { opacity: 0; }
+        to   { opacity: 1; }
+      }
+
+      @keyframes scrollTick {
+        0%   { top: -100%; }
+        100% { top:  100%; }
       }
     </style>
   </head>
   <body>
-    <p class="status">Phase 1.1 — Live ✓</p>
+    <div class="scene">
+      <Globe client:only="svelte" />
+    </div>
+
+    <div class="overlay">
+      <div class="accent-line"></div>
+      <h1 class="name">Andrew Martin</h1>
+      <p class="role">GIS Designer &amp; Spatial Analyst</p>
+      <div class="scroll-hint">
+        <div class="scroll-line"></div>
+        <span>Scroll to explore</span>
+      </div>
+    </div>
   </body>
 </html>
