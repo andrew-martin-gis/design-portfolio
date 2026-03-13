@@ -83,7 +83,7 @@
     // Inner sphere — night earth texture, dark fallback while loading
     const earthMat = new THREE.MeshBasicMaterial({ color: 0x020818 });
     new THREE.TextureLoader().load(
-      `${base}8k_earth_nightmap.jpg`,
+      `${base}2k_earth_nightmap.jpg`,
       tex => {
         tex.colorSpace = THREE.SRGBColorSpace;
         earthMat.map   = tex;
@@ -103,7 +103,7 @@
       color: 0xffffff,
       transparent: true,
       opacity: 0,
-      blending: THREE.AdditiveBlending,
+      alphaTest: 0.05,
       depthWrite: false,
     });
     const cloudMesh = new THREE.Mesh(
@@ -116,8 +116,8 @@
       `${base}8k_earth_clouds.jpg`,
       tex => {
         tex.colorSpace = THREE.SRGBColorSpace;
-        cloudMat.map     = tex;
-        cloudMat.opacity = 0.7;
+        cloudMat.alphaMap = tex;
+        cloudMat.opacity  = 1;
         cloudMat.needsUpdate = true;
       },
       undefined,
