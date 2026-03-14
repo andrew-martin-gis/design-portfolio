@@ -128,7 +128,12 @@
     // Night texture — preload from public/
     loader.load(
       pubBase + '8k_earth_nightmap.jpg',
-      tex => { tex.colorSpace = THREE.SRGBColorSpace; threeRefs.nightTex = tex; },
+      tex => {
+        tex.colorSpace = THREE.SRGBColorSpace;
+        threeRefs.nightTex = tex;
+        // Apply immediately if user toggled to night before this loaded
+        if (!isDayView) { earthMat.map = tex; earthMat.needsUpdate = true; }
+      },
       undefined,
       () => console.warn('Night earth texture unavailable')
     );
@@ -162,7 +167,7 @@
         cloudMat.opacity  = 0.3;
         cloudMat.needsUpdate = true;
         threeRefs.cloudReady = true;
-        cloudMesh.visible = showClouds; // show immediately in default day view
+        cloudMesh.visible = isDayView && showClouds; // respect current view state
       },
       undefined,
       () => console.warn('Cloud texture unavailable — cloud layer hidden')
@@ -520,7 +525,7 @@
   <div class="toggle-group">
     <button
       class="toggle-btn"
-      class:active={showClouds}
+      class:active={showClouds && isDayView}
       on:click|stopPropagation={toggleClouds}
       aria-label={showClouds ? 'Hide clouds' : 'Show clouds'}
       title={showClouds ? 'Hide clouds' : 'Show clouds'}
