@@ -197,8 +197,21 @@ const featured = projects.filter(p => p.featured);
     position: absolute;
     bottom: 0;
     left: 0;
-    padding: clamp(2rem, 5vw, 4.5rem);
+    padding: clamp(1.5rem, 4vw, 3.5rem) clamp(1.75rem, 5vw, 4.5rem);
     pointer-events: none;
+    /* Stylized backdrop so text is legible over the globe in any view */
+    background: linear-gradient(
+      135deg,
+      rgba(2, 8, 24, 0.72) 0%,
+      rgba(2, 8, 24, 0.55) 70%,
+      transparent 100%
+    );
+    border-top: 1px solid rgba(59, 130, 246, 0.12);
+    border-right: 1px solid rgba(59, 130, 246, 0.08);
+    border-radius: 0 1rem 0 0;
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    max-width: min(480px, 60vw);
   }
 
   .accent-line {
@@ -211,7 +224,6 @@ const featured = projects.filter(p => p.featured);
   }
 
   .hero-name {
-    mix-blend-mode: screen;
     opacity: 0;
     animation: slideUp 1s cubic-bezier(0.22, 1, 0.36, 1) forwards 0.55s;
   }

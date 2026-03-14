@@ -7,8 +7,7 @@
   import { RenderPass }      from 'three/examples/jsm/postprocessing/RenderPass.js';
   import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
   import { projects } from '../../data/projects.js';
-  import earthNightUrl from '../../assets/earth-night.jpg';
-  import cloudsUrl     from '../../assets/8k_earth_clouds.jpg';
+  import cloudsUrl from '../../assets/8k_earth_clouds.jpg?url';
 
   let wrap;
   let canvas;
@@ -17,9 +16,33 @@
   let activeProject  = null;
   let hoveredProject = null;
   let hoverPos       = { x: 0, y: 0 };
+  let isDayView      = false;
+  let showClouds     = true;
 
-  // Bridge to close panel from template button
-  let doClose = () => {};
+  // Bridge refs for Three.js ↔ template communication
+  let doClose    = () => {};
+  let threeRefs  = { earthMat: null, nightTex: null, dayTex: null, cloudMesh: null, cloudReady: false };
+
+  function toggleView() {
+    isDayView = !isDayView;
+    const { earthMat, nightTex, dayTex, cloudMesh, cloudReady } = threeRefs;
+    if (!earthMat) return;
+    if (isDayView && dayTex) {
+      earthMat.map = dayTex;
+      earthMat.needsUpdate = true;
+      if (cloudMesh) cloudMesh.visible = showClouds && cloudReady;
+    } else if (!isDayView && nightTex) {
+      earthMat.map = nightTex;
+      earthMat.needsUpdate = true;
+      if (cloudMesh) cloudMesh.visible = false;
+    }
+  }
+
+  function toggleClouds() {
+    showClouds = !showClouds;
+    const { cloudMesh, cloudReady } = threeRefs;
+    if (cloudMesh) cloudMesh.visible = isDayView && showClouds && cloudReady;
+  }
 
   const base = import.meta.env.BASE_URL;
 
@@ -82,12 +105,18 @@
     tiltGroup.add(globeGroup);
     scene.add(tiltGroup);
 
-    // Inner sphere — night earth texture, dark fallback while loading
+    // ── Earth textures (preload both) ─────────────────────────────────────
+    const loader   = new THREE.TextureLoader();
     const earthMat = new THREE.MeshBasicMaterial({ color: 0x020818 });
-    new THREE.TextureLoader().load(
-      earthNightUrl,
+    const pubBase  = base.replace(/\/?$/, '/');
+    threeRefs.earthMat = earthMat;
+
+    // Night texture (default) — from public/
+    loader.load(
+      pubBase + '8k_earth_nightmap.jpg',
       tex => {
         tex.colorSpace = THREE.SRGBColorSpace;
+        threeRefs.nightTex = tex;
         earthMat.map   = tex;
         earthMat.color.set(0xffffff);
         earthMat.needsUpdate = true;
@@ -95,12 +124,21 @@
       undefined,
       () => console.warn('Night earth texture unavailable — using fallback colour')
     );
+
+    // Day texture — preload from public/
+    loader.load(
+      pubBase + '8k_earth_daymap.jpg',
+      tex => { tex.colorSpace = THREE.SRGBColorSpace; threeRefs.dayTex = tex; },
+      undefined,
+      () => console.warn('Day earth texture unavailable')
+    );
+
     globeGroup.add(new THREE.Mesh(
       new THREE.SphereGeometry(0.998, 64, 64),
       earthMat
     ));
 
-    // ── Cloud layer ──────────────────────────────────────────────────────
+    // ── Cloud layer (day view only) ─────────────────────────────────────
     const cloudMat = new THREE.MeshBasicMaterial({
       color: 0xffffff,
       transparent: true,
@@ -112,21 +150,24 @@
       new THREE.SphereGeometry(1.010, 64, 64),
       cloudMat
     );
+    cloudMesh.visible = false; // hidden by default (night view)
     globeGroup.add(cloudMesh);
+    threeRefs.cloudMesh = cloudMesh;
 
-    new THREE.TextureLoader().load(
+    loader.load(
       cloudsUrl,
       tex => {
         tex.colorSpace = THREE.SRGBColorSpace;
         cloudMat.alphaMap = tex;
         cloudMat.opacity  = 0.3;
         cloudMat.needsUpdate = true;
+        threeRefs.cloudReady = true;
       },
       undefined,
       () => console.warn('Cloud texture unavailable — cloud layer hidden')
     );
 
-    // Fibonacci dot cloud
+    // Fibonacci dot cloud — subtle, low opacity to not obscure imagery
     {
       const N = 7500, dp = new Float32Array(N * 3);
       for (let i = 0; i < N; i++) {
@@ -135,7 +176,7 @@
       }
       const dg = new THREE.BufferGeometry();
       dg.setAttribute('position', new THREE.BufferAttribute(dp, 3));
-      globeGroup.add(new THREE.Points(dg, new THREE.PointsMaterial({ color:0x60a5fa, size:0.007, transparent:true, opacity:0.22, sizeAttenuation:true, depthWrite:false })));
+      globeGroup.add(new THREE.Points(dg, new THREE.PointsMaterial({ color:0x60a5fa, size:0.005, transparent:true, opacity:0.07, sizeAttenuation:true, depthWrite:false })));
     }
 
     // ── Lat / lon grid ───────────────────────────────────────────────────
@@ -212,13 +253,14 @@
 
     // ── Project markers ──────────────────────────────────────────────────
     const raycaster    = new THREE.Raycaster();
+    raycaster.params.Points.threshold = 0.02;
     const markerMeshes = [];
     const markerData   = [];
     const dotGeoM      = new THREE.SphereGeometry(0.012, 12, 12);
     const ringGeoM     = new THREE.TorusGeometry(0.022, 0.003, 8, 32);
 
     locatedProjects.forEach(project => {
-      const pos = latLonToVec3(project.location.lat, project.location.lon, 1.015);
+      const pos = latLonToVec3(project.location.lat, project.location.lon, 1.018);
 
       const dot = new THREE.Mesh(dotGeoM, new THREE.MeshBasicMaterial({ color:0xff2020, transparent:true }));
       dot.position.copy(pos);
@@ -240,7 +282,7 @@
     });
 
     // ── Interaction state machine ────────────────────────────────────────
-    // States: 'auto' | 'drag' | 'coast' | 'spinning'
+    // States: 'auto' | 'drag' | 'coast' | 'spinning' | 'locked'
     let intState  = 'auto';
     const vel     = { x: 0 };
     const AUTO    = 0.0004;   // ~1 full revolution per 4 min
@@ -286,8 +328,10 @@
       } else if (intState === 'spinning' && spinTgt !== null) {
         const diff = spinTgt - globeGroup.rotation.y;
         globeGroup.rotation.y += diff * 0.055;
-        if (Math.abs(diff) < 0.008) { globeGroup.rotation.y = spinTgt; spinTgt = null; intState = 'auto'; }
+        // After spinning to a project, lock rotation until panel is closed
+        if (Math.abs(diff) < 0.008) { globeGroup.rotation.y = spinTgt; spinTgt = null; intState = 'locked'; }
       }
+      // 'locked' and 'drag' states: no automatic rotation
 
       cloudMesh.rotation.y += 0.00008;
 
@@ -303,11 +347,11 @@
         const p2 = (t*1.2 + phase + Math.PI) % (Math.PI*2);
         const s1 = 1 + ((Math.sin(p1)+1)/2)*1.2;
         ring.scale.setScalar(s1);
-        ring.material.opacity = 0.55*(1-(s1-1)/1.2);
+        ring.material.opacity = 0.75*(1-(s1-1)/1.2);
         const s2 = 1 + ((Math.sin(p2)+1)/2)*1.2;
         ring2.scale.setScalar(s2);
-        ring2.material.opacity = 0.35*(1-(s2-1)/1.2);
-        dot.material.opacity = 0.7 + 0.3*Math.sin(t*2+phase);
+        ring2.material.opacity = 0.45*(1-(s2-1)/1.2);
+        dot.material.opacity = 0.85 + 0.15*Math.sin(t*2+phase);
       });
 
       // Keep hover label glued to spinning marker
@@ -356,6 +400,7 @@
     const closePanel = () => {
       activeProject = null;
       intState = 'auto';
+      vel.x = AUTO;
       canvas.style.cursor = 'grab';
     };
     doClose = closePanel; // expose to template
@@ -415,8 +460,8 @@
           closePanel();
         }
       } else {
-        intState = 'coast';
-        canvas.style.cursor = 'grab';
+        intState = activeProject ? 'locked' : 'coast';
+        canvas.style.cursor = activeProject ? 'default' : 'grab';
       }
       mdPos = null;
     };
@@ -424,7 +469,10 @@
     const onLeave = () => {
       mouse.nx = 0; mouse.ny = 0;
       hoveredProject = null;
-      if (intState === 'drag') { intState = 'coast'; canvas.style.cursor = 'grab'; }
+      if (intState === 'drag') {
+        intState = activeProject ? 'locked' : 'coast';
+        canvas.style.cursor = activeProject ? 'default' : 'grab';
+      }
     };
 
     // Touch passthrough
@@ -466,6 +514,41 @@
 <!-- ══ Template ══════════════════════════════════════════════════════════════ -->
 <div class="wrap" bind:this={wrap}>
   <canvas bind:this={canvas} style="display:block;width:100%;height:100%;" />
+
+  <!-- Day/night + cloud toggles — bottom-right of globe viewer -->
+  <div class="toggle-group">
+    <button
+      class="toggle-btn"
+      class:active={showClouds}
+      on:click|stopPropagation={toggleClouds}
+      aria-label={showClouds ? 'Hide clouds' : 'Show clouds'}
+      title={showClouds ? 'Hide clouds' : 'Show clouds'}
+    >
+      <!-- Cloud icon -->
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9z"/>
+      </svg>
+    </button>
+
+    <button
+      class="toggle-btn"
+      on:click|stopPropagation={toggleView}
+      aria-label={isDayView ? 'Switch to night view' : 'Switch to day view'}
+      title={isDayView ? 'Switch to night view' : 'Switch to day view'}
+    >
+      {#if isDayView}
+        <!-- Moon icon -->
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+      {:else}
+        <!-- Sun icon -->
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+        </svg>
+      {/if}
+    </button>
+  </div>
 
   <!-- Hover tooltip -->
   {#if hoveredProject && !activeProject}
@@ -515,6 +598,45 @@
     cursor: grab;
     user-select: none;
     -webkit-user-select: none;
+  }
+
+  /* ── Toggle button group — bottom-right ── */
+  .toggle-group {
+    position: absolute;
+    bottom: 1.5rem;
+    right: 1.5rem;
+    display: flex;
+    flex-direction: row;
+    gap: 0.5rem;
+    z-index: 15;
+    pointer-events: auto;
+  }
+
+  .toggle-btn {
+    width: 40px;
+    height: 40px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: rgba(2, 8, 24, 0.72);
+    border: 1px solid rgba(59, 130, 246, 0.25);
+    color: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s, color 0.2s;
+  }
+
+  .toggle-btn:hover {
+    background: rgba(59, 130, 246, 0.18);
+    border-color: rgba(59, 130, 246, 0.55);
+    color: #fff;
+  }
+
+  .toggle-btn.active {
+    background: rgba(59, 130, 246, 0.22);
+    border-color: rgba(59, 130, 246, 0.6);
+    color: #93c5fd;
   }
 
   /* ── Hover tooltip ── */
