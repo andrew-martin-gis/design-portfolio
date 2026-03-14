@@ -16,7 +16,7 @@
   let activeProject  = null;
   let hoveredProject = null;
   let hoverPos       = { x: 0, y: 0 };
-  let isDayView      = false;
+  let isDayView      = true;
   let showClouds     = true;
 
   // Bridge refs for Three.js ↔ template communication
@@ -111,26 +111,26 @@
     const pubBase  = base.replace(/\/?$/, '/');
     threeRefs.earthMat = earthMat;
 
-    // Night texture (default) — from public/
+    // Day texture (default) — from public/
     loader.load(
-      pubBase + '8k_earth_nightmap.jpg',
+      pubBase + '8k_earth_daymap.jpg',
       tex => {
         tex.colorSpace = THREE.SRGBColorSpace;
-        threeRefs.nightTex = tex;
+        threeRefs.dayTex = tex;
         earthMat.map   = tex;
         earthMat.color.set(0xffffff);
         earthMat.needsUpdate = true;
       },
       undefined,
-      () => console.warn('Night earth texture unavailable — using fallback colour')
+      () => console.warn('Day earth texture unavailable — using fallback colour')
     );
 
-    // Day texture — preload from public/
+    // Night texture — preload from public/
     loader.load(
-      pubBase + '8k_earth_daymap.jpg',
-      tex => { tex.colorSpace = THREE.SRGBColorSpace; threeRefs.dayTex = tex; },
+      pubBase + '8k_earth_nightmap.jpg',
+      tex => { tex.colorSpace = THREE.SRGBColorSpace; threeRefs.nightTex = tex; },
       undefined,
-      () => console.warn('Day earth texture unavailable')
+      () => console.warn('Night earth texture unavailable')
     );
 
     globeGroup.add(new THREE.Mesh(
@@ -150,7 +150,7 @@
       new THREE.SphereGeometry(1.010, 64, 64),
       cloudMat
     );
-    cloudMesh.visible = false; // hidden by default (night view)
+    cloudMesh.visible = false; // shown once texture loads (day view default)
     globeGroup.add(cloudMesh);
     threeRefs.cloudMesh = cloudMesh;
 
@@ -162,6 +162,7 @@
         cloudMat.opacity  = 0.3;
         cloudMat.needsUpdate = true;
         threeRefs.cloudReady = true;
+        cloudMesh.visible = showClouds; // show immediately in default day view
       },
       undefined,
       () => console.warn('Cloud texture unavailable — cloud layer hidden')
