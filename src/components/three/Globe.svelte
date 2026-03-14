@@ -7,8 +7,7 @@
   import { RenderPass }      from 'three/examples/jsm/postprocessing/RenderPass.js';
   import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
   import { projects } from '../../data/projects.js';
-  import earthNightUrl from '../../assets/earth-night.jpg';
-  import cloudsUrl     from '../../assets/8k_earth_clouds.jpg';
+  import cloudsUrl from '../../assets/8k_earth_clouds.jpg?url';
 
   let wrap;
   let canvas;
@@ -17,9 +16,26 @@
   let activeProject  = null;
   let hoveredProject = null;
   let hoverPos       = { x: 0, y: 0 };
+  let isDayView      = false;
 
-  // Bridge to close panel from template button
-  let doClose = () => {};
+  // Bridge refs for Three.js ↔ template communication
+  let doClose    = () => {};
+  let threeRefs  = { earthMat: null, nightTex: null, dayTex: null, cloudMesh: null, cloudReady: false };
+
+  function toggleView() {
+    isDayView = !isDayView;
+    const { earthMat, nightTex, dayTex, cloudMesh, cloudReady } = threeRefs;
+    if (!earthMat) return;
+    if (isDayView && dayTex) {
+      earthMat.map = dayTex;
+      earthMat.needsUpdate = true;
+      if (cloudMesh) cloudMesh.visible = cloudReady;
+    } else if (!isDayView && nightTex) {
+      earthMat.map = nightTex;
+      earthMat.needsUpdate = true;
+      if (cloudMesh) cloudMesh.visible = false;
+    }
+  }
 
   const base = import.meta.env.BASE_URL;
 
@@ -82,12 +98,18 @@
     tiltGroup.add(globeGroup);
     scene.add(tiltGroup);
 
-    // Inner sphere — night earth texture, dark fallback while loading
+    // ── Earth textures (preload both) ─────────────────────────────────────
+    const loader   = new THREE.TextureLoader();
     const earthMat = new THREE.MeshBasicMaterial({ color: 0x020818 });
-    new THREE.TextureLoader().load(
-      earthNightUrl,
+    const pubBase  = base.replace(/\/?$/, '/');
+    threeRefs.earthMat = earthMat;
+
+    // Night texture (default) — from public/
+    loader.load(
+      pubBase + '8k_earth_nightmap.jpg',
       tex => {
         tex.colorSpace = THREE.SRGBColorSpace;
+        threeRefs.nightTex = tex;
         earthMat.map   = tex;
         earthMat.color.set(0xffffff);
         earthMat.needsUpdate = true;
@@ -95,12 +117,21 @@
       undefined,
       () => console.warn('Night earth texture unavailable — using fallback colour')
     );
+
+    // Day texture — preload from public/
+    loader.load(
+      pubBase + '8k_earth_daymap.jpg',
+      tex => { tex.colorSpace = THREE.SRGBColorSpace; threeRefs.dayTex = tex; },
+      undefined,
+      () => console.warn('Day earth texture unavailable')
+    );
+
     globeGroup.add(new THREE.Mesh(
       new THREE.SphereGeometry(0.998, 64, 64),
       earthMat
     ));
 
-    // ── Cloud layer ──────────────────────────────────────────────────────
+    // ── Cloud layer (day view only) ─────────────────────────────────────
     const cloudMat = new THREE.MeshBasicMaterial({
       color: 0xffffff,
       transparent: true,
@@ -112,15 +143,18 @@
       new THREE.SphereGeometry(1.010, 64, 64),
       cloudMat
     );
+    cloudMesh.visible = false; // hidden by default (night view)
     globeGroup.add(cloudMesh);
+    threeRefs.cloudMesh = cloudMesh;
 
-    new THREE.TextureLoader().load(
+    loader.load(
       cloudsUrl,
       tex => {
         tex.colorSpace = THREE.SRGBColorSpace;
         cloudMat.alphaMap = tex;
         cloudMat.opacity  = 1;
         cloudMat.needsUpdate = true;
+        threeRefs.cloudReady = true;
       },
       undefined,
       () => console.warn('Cloud texture unavailable — cloud layer hidden')
@@ -467,6 +501,19 @@
 <div class="wrap" bind:this={wrap}>
   <canvas bind:this={canvas} style="display:block;width:100%;height:100%;" />
 
+  <!-- Day/night toggle -->
+  <button class="view-toggle" on:click={toggleView} aria-label={isDayView ? 'Switch to night view' : 'Switch to day view'}>
+    {#if isDayView}
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+      </svg>
+    {:else}
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+      </svg>
+    {/if}
+  </button>
+
   <!-- Hover tooltip -->
   {#if hoveredProject && !activeProject}
     <div class="hover-tag" style="left:{hoverPos.x}px;top:{hoverPos.y}px;">
@@ -515,6 +562,31 @@
     cursor: grab;
     user-select: none;
     -webkit-user-select: none;
+  }
+
+  /* ── Day/night toggle ── */
+  .view-toggle {
+    position: absolute;
+    top: 1.2rem;
+    right: 1.2rem;
+    width: 40px;
+    height: 40px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: rgba(2, 8, 24, 0.7);
+    border: 1px solid rgba(59, 130, 246, 0.25);
+    color: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    cursor: pointer;
+    transition: background 0.25s, border-color 0.25s, color 0.25s;
+    z-index: 15;
+  }
+  .view-toggle:hover {
+    background: rgba(59, 130, 246, 0.15);
+    border-color: rgba(59, 130, 246, 0.5);
+    color: #fff;
   }
 
   /* ── Hover tooltip ── */
