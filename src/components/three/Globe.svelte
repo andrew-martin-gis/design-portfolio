@@ -119,7 +119,7 @@
       tex => {
         tex.colorSpace = THREE.SRGBColorSpace;
         cloudMat.alphaMap = tex;
-        cloudMat.opacity  = 1;
+        cloudMat.opacity  = 0.3;
         cloudMat.needsUpdate = true;
       },
       undefined,
@@ -214,13 +214,13 @@
     const raycaster    = new THREE.Raycaster();
     const markerMeshes = [];
     const markerData   = [];
-    const dotGeoM      = new THREE.SphereGeometry(0.022, 12, 12);
-    const ringGeoM     = new THREE.TorusGeometry(0.038, 0.004, 8, 32);
+    const dotGeoM      = new THREE.SphereGeometry(0.012, 12, 12);
+    const ringGeoM     = new THREE.TorusGeometry(0.022, 0.003, 8, 32);
 
     locatedProjects.forEach(project => {
       const pos = latLonToVec3(project.location.lat, project.location.lon, 1.015);
 
-      const dot = new THREE.Mesh(dotGeoM, new THREE.MeshBasicMaterial({ color:0x38bdf8, transparent:true }));
+      const dot = new THREE.Mesh(dotGeoM, new THREE.MeshBasicMaterial({ color:0xff2020, transparent:true }));
       dot.position.copy(pos);
       dot.userData = { project };
       globeGroup.add(dot);
@@ -236,7 +236,7 @@
         return r;
       };
 
-      markerData.push({ dot, ring:makeRing(0x38bdf8,0.6), ring2:makeRing(0x60a5fa,0.4), project, phase:Math.random()*Math.PI*2 });
+      markerData.push({ dot, ring:makeRing(0xff2020,0.6), ring2:makeRing(0xff6060,0.4), project, phase:Math.random()*Math.PI*2 });
     });
 
     // ── Interaction state machine ────────────────────────────────────────
@@ -256,7 +256,7 @@
     // ── Post-processing ──────────────────────────────────────────────────
     const composer = new EffectComposer(renderer);
     composer.addPass(new RenderPass(scene, camera));
-    composer.addPass(new UnrealBloomPass(new THREE.Vector2(W,H), 0.55, 0.4, 0.28));
+    composer.addPass(new UnrealBloomPass(new THREE.Vector2(W,H), 0.55, 0.4, 0.82));
 
     // Screen-space helpers
     const worldToScreen = mesh => {
