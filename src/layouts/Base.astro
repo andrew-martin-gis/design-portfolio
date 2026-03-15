@@ -17,7 +17,7 @@ const {
 } = Astro.props;
 
 const base      = import.meta.env.BASE_URL;
-const siteUrl   = 'https://andrew-martin-gis.github.io';
+const siteUrl   = 'https://www.gisdev.me';
 const canonical = new URL(Astro.url.pathname, siteUrl).href;
 const ogImg     = ogImage ?? `${siteUrl}${base}og.svg`;
 ---
