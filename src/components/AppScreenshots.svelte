@@ -177,6 +177,13 @@
     border: none;
     background: transparent;
     outline: none;
+  }
+
+  .lightbox:not([open]) {
+    display: none;
+  }
+
+  .lightbox[open] {
     display: flex;
     align-items: center;
     justify-content: center;
