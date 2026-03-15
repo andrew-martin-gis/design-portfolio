@@ -9,7 +9,8 @@ import StoreButtons   from '../components/StoreButtons.svelte';
 import CountUp        from '../components/CountUp.svelte';
 import { gozioApps }  from '../data/gozioApps';
 
-const profileImg = `${import.meta.env.BASE_URL}profile_picture.jpeg`;
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const profileImg = `${base}/profile_picture.jpeg`;
 ---
 
 <Base>
@@ -158,7 +159,7 @@ const profileImg = `${import.meta.env.BASE_URL}profile_picture.jpeg`;
   </section>
 
   <!-- ═══════════════════════════════════════════════════════ PROJECTS ═════ -->
-  <section id="projects" class="section">
+  <section id="projects" class="section projects-section">
     <div class="container">
       <h2>Projects</h2>
       <!-- TODO: Projects section — planning in progress -->
@@ -268,7 +269,7 @@ const profileImg = `${import.meta.env.BASE_URL}profile_picture.jpeg`;
 
   /* ── About ───────────────────────────────────────────────────────────── */
   .about-section {
-    padding-block: clamp(3rem, 6vw, 5rem);
+    padding-block: clamp(2rem, 4vw, 3.5rem);
     background: linear-gradient(to bottom, transparent, var(--bg-surface) 10%, var(--bg-surface) 90%, transparent);
   }
 
@@ -438,6 +439,11 @@ const profileImg = `${import.meta.env.BASE_URL}profile_picture.jpeg`;
     }
   }
 
+  /* ── Projects ────────────────────────────────────────────────────────── */
+  .projects-section {
+    padding-block: clamp(2rem, 4vw, 3.5rem);
+  }
+
   /* ── Footer ──────────────────────────────────────────────────────────── */
   .footer {
     padding-block: 2.5rem;
@@ -473,7 +479,7 @@ const profileImg = `${import.meta.env.BASE_URL}profile_picture.jpeg`;
 
   /* ── Gozio ───────────────────────────────────────────────────────────── */
   .gozio-section {
-    padding-block: clamp(3rem, 6vw, 5rem);
+    padding-block: clamp(2rem, 4vw, 3.5rem);
     background: linear-gradient(to bottom, transparent, var(--bg-surface) 10%, var(--bg-surface) 90%, transparent);
   }
 

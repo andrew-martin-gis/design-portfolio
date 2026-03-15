@@ -31,7 +31,7 @@
 
 <style>
   .section-title {
-    margin-bottom: clamp(3rem, 6vw, 5rem);
+    margin-bottom: clamp(1.5rem, 3vw, 2.5rem);
     opacity: 0;
     transform: translateY(24px);
     transition: opacity 0.7s ease, transform 0.7s ease;
