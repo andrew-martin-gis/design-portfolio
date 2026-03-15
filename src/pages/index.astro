@@ -158,6 +158,89 @@ const profileImg = `${base}/profile_picture.jpeg`;
     </div>
   </section>
 
+  <!-- ═══════════════════════════════════════════════════════ SKILLS ═══════ -->
+  <section id="skills" class="section skills-section">
+    <div class="container">
+      <SectionTitle label="What I work with" title="Technical Skills" client:visible />
+
+      <div class="skills-groups">
+        <div class="skill-group">
+          <h3 class="skill-group-label">GIS &amp; Mapping</h3>
+          <div class="skill-chips">
+            <span class="chip">ArcGIS Pro</span>
+            <span class="chip">ArcGIS Online</span>
+            <span class="chip">Survey123</span>
+            <span class="chip">StoryMaps</span>
+            <span class="chip">JOSM</span>
+            <span class="chip">Google Earth Pro</span>
+            <span class="chip">Indoor Mapping &amp; Wayfinding Systems</span>
+          </div>
+        </div>
+
+        <div class="skill-group">
+          <h3 class="skill-group-label">Programming</h3>
+          <div class="skill-chips">
+            <span class="chip">Python</span>
+            <span class="chip">ArcPy</span>
+            <span class="chip">Shell/Bash</span>
+            <span class="chip">HTML/CSS</span>
+            <span class="chip">SQL</span>
+            <span class="chip">JavaScript</span>
+            <span class="chip">R</span>
+          </div>
+        </div>
+
+        <div class="skill-group">
+          <h3 class="skill-group-label">Data &amp; APIs</h3>
+          <div class="skill-chips">
+            <span class="chip">pandas</span>
+            <span class="chip">NumPy</span>
+            <span class="chip">REST APIs</span>
+            <span class="chip">openpyxl</span>
+            <span class="chip">JSON/GeoJSON</span>
+            <span class="chip">XML</span>
+            <span class="chip">File Geodatabases</span>
+            <span class="chip">PostGIS</span>
+            <span class="chip">Georeferencing</span>
+          </div>
+        </div>
+
+        <div class="skill-group">
+          <h3 class="skill-group-label">Tools</h3>
+          <div class="skill-chips">
+            <span class="chip">Git</span>
+            <span class="chip">GitHub</span>
+            <span class="chip">Bitbucket</span>
+            <span class="chip">Jira</span>
+            <span class="chip">Confluence</span>
+            <span class="chip">VS Code</span>
+            <span class="chip">Agile/Scrum</span>
+          </div>
+        </div>
+
+        <div class="skill-group">
+          <h3 class="skill-group-label">Design</h3>
+          <div class="skill-chips">
+            <span class="chip">Cartographic Design (2D &amp; 3D)</span>
+            <span class="chip">Map UI/UX</span>
+            <span class="chip">Data Visualization</span>
+            <span class="chip">CAD Processing</span>
+          </div>
+        </div>
+
+        <div class="skill-group">
+          <h3 class="skill-group-label">Domain</h3>
+          <div class="skill-chips">
+            <span class="chip">Healthcare</span>
+            <span class="chip">BLE Beacon / Indoor Positioning</span>
+            <span class="chip">Wayfinding &amp; Navigation</span>
+            <span class="chip">Software Development</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- ═══════════════════════════════════════════════════════ PROJECTS ═════ -->
   <section id="projects" class="section projects-section">
     <div class="container">
@@ -490,6 +573,50 @@ const profileImg = `${base}/profile_picture.jpeg`;
     .about-asymmetric {
       grid-template-columns: 1fr;
     }
+  }
+
+  /* ── Skills ──────────────────────────────────────────────────────────── */
+  .skills-section {
+    padding-block: clamp(2rem, 4vw, 3.5rem);
+  }
+
+  .skills-groups {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .skill-group-label {
+    font-size: 0.72rem;
+    font-weight: 400;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent-light);
+    margin-bottom: 0.75rem;
+  }
+
+  .skill-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+  }
+
+  .chip {
+    font-size: 0.82rem;
+    font-weight: 300;
+    letter-spacing: 0.03em;
+    color: var(--text-secondary);
+    padding: 0.45rem 1rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--bg-surface);
+    white-space: nowrap;
+    transition: border-color var(--transition), color var(--transition);
+  }
+
+  .chip:hover {
+    border-color: var(--border-hover);
+    color: var(--text-primary);
   }
 
   /* ── Projects ────────────────────────────────────────────────────────── */
