@@ -43,16 +43,18 @@ import { gozioApps }  from '../data/gozioApps';
           <div class="avatar">AM</div>
           <div class="bio-text">
             <p>
-              I'm a digital map designer at Gozio Health, where I've built over 1,000
-              indoor wayfinding maps for healthcare systems across the United States.
-              My background is in applied geography — I care about spatial precision,
-              clean cartography, and making geographic data legible for the people who
-              depend on it.
+              I'm a digital map designer specializing in indoor wayfinding, having spent
+              four years at Gozio Health creating interactive 3D maps for healthcare
+              systems across the United States. What draws me to indoor mapping is the
+              balance between art and science — aesthetics and spatial precision are
+              equally essential to making a map that actually works for the people
+              navigating it.
             </p>
             <p>
-              Outside of indoor mapping I work on environmental GIS, transit equity,
-              and data visualisation projects that sit at the edge of spatial analysis
-              and interactive design.
+              Beyond map design, I cross-trained in QA, content management, and
+              geospatial tool development, which gave me a fuller picture of the
+              wayfinding lifecycle and led me to build internal automation tools that
+              streamlined workflows for the whole team.
             </p>
             <a href="mailto:andrew.martin.gis@outlook.com" class="contact-link">
               Get in touch →
@@ -63,15 +65,11 @@ import { gozioApps }  from '../data/gozioApps';
         <div class="gozio-stats">
           <div class="stat">
             <span class="stat-number"><CountUp client:visible target={1000} suffix="+" duration={2000} /></span>
-            <span class="stat-label">Indoor Maps Designed</span>
+            <span class="stat-label">Indoor Maps</span>
           </div>
           <div class="stat">
             <span class="stat-number"><CountUp client:visible target={4} suffix=" yrs" duration={1800} /></span>
             <span class="stat-label">At Gozio Health</span>
-          </div>
-          <div class="stat">
-            <span class="stat-number"><CountUp client:visible target={50} suffix="+" duration={1600} /></span>
-            <span class="stat-label">Training Guide Sections</span>
           </div>
         </div>
       </div>
@@ -110,9 +108,6 @@ import { gozioApps }  from '../data/gozioApps';
               Developed Python automation tools for mapping workflows and data
               analysis/monitoring.
             </p>
-            <a href="mailto:andrew.martin.gis@outlook.com" class="contact-link">
-              Get in touch →
-            </a>
           </div>
 
           <!-- Education card -->
@@ -271,6 +266,7 @@ import { gozioApps }  from '../data/gozioApps';
 
   /* ── About ───────────────────────────────────────────────────────────── */
   .about-section {
+    padding-block: clamp(3rem, 6vw, 5rem);
     background: linear-gradient(to bottom, transparent, var(--bg-surface) 10%, var(--bg-surface) 90%, transparent);
   }
 
@@ -475,11 +471,12 @@ import { gozioApps }  from '../data/gozioApps';
 
   /* ── Gozio ───────────────────────────────────────────────────────────── */
   .gozio-section {
+    padding-block: clamp(3rem, 6vw, 5rem);
     background: linear-gradient(to bottom, transparent, var(--bg-surface) 10%, var(--bg-surface) 90%, transparent);
   }
 
   .screenshots-row {
-    margin-block: 2.5rem;
+    margin-block: 2rem;
   }
 
   /* Gozio intro row: bio + stats */
@@ -488,7 +485,7 @@ import { gozioApps }  from '../data/gozioApps';
     grid-template-columns: 1fr auto;
     gap: 3rem;
     align-items: center;
-    margin-bottom: 3rem;
+    margin-bottom: 2rem;
   }
 
   .gozio-bio {
