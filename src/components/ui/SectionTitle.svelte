@@ -32,6 +32,7 @@
 <style>
   .section-title {
     margin-bottom: clamp(1.5rem, 3vw, 2.5rem);
+    text-align: center;
     opacity: 0;
     transform: translateY(24px);
     transition: opacity 0.7s ease, transform 0.7s ease;
@@ -64,6 +65,7 @@
     height: 1px;
     background: var(--accent);
     margin-top: 1.25rem;
+    margin-inline: auto;
     transition: width 0.6s ease 0.4s;
   }
 
