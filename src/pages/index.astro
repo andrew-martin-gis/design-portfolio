@@ -358,15 +358,15 @@ const profileImg = `${base}/profile_picture.jpeg`;
     /* Stylized backdrop so text is legible over the globe in any view */
     background: linear-gradient(
       135deg,
-      rgba(2, 8, 24, 0.72) 0%,
-      rgba(2, 8, 24, 0.55) 70%,
-      transparent 100%
+      rgba(2, 8, 24, 0.88) 0%,
+      rgba(2, 8, 24, 0.72) 60%,
+      rgba(2, 8, 24, 0.35) 100%
     );
-    border-top: 1px solid rgba(59, 130, 246, 0.12);
-    border-right: 1px solid rgba(59, 130, 246, 0.08);
+    border-top: 1px solid rgba(59, 130, 246, 0.15);
+    border-right: 1px solid rgba(59, 130, 246, 0.10);
     border-radius: 0 1rem 0 0;
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
     max-width: min(480px, 60vw);
   }
 
@@ -381,6 +381,7 @@ const profileImg = `${base}/profile_picture.jpeg`;
 
   .hero-name {
     opacity: 0;
+    text-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
     animation: slideUp 1s cubic-bezier(0.22, 1, 0.36, 1) forwards 0.55s;
   }
 
@@ -392,6 +393,7 @@ const profileImg = `${base}/profile_picture.jpeg`;
     text-transform: uppercase;
     color: var(--accent-light);
     margin-top: 0.8rem;
+    text-shadow: 0 1px 8px rgba(0, 0, 0, 0.4);
     opacity: 0;
     animation: slideUp 1s cubic-bezier(0.22, 1, 0.36, 1) forwards 0.75s;
   }

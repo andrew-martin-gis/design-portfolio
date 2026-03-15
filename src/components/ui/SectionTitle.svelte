@@ -25,13 +25,16 @@
   {#if label}
     <span class="label">{label}</span>
   {/if}
-  <h2>{title}</h2>
-  <div class="rule"></div>
+  <div class="title-row">
+    <span class="line line-left"></span>
+    <h2>{title}</h2>
+    <span class="line line-right"></span>
+  </div>
 </div>
 
 <style>
   .section-title {
-    margin-bottom: clamp(1.5rem, 3vw, 2.5rem);
+    margin-bottom: clamp(2rem, 4vw, 3rem);
     text-align: center;
     opacity: 0;
     transform: translateY(24px);
@@ -45,31 +48,58 @@
 
   .label {
     display: block;
-    font-size: 0.7rem;
+    font-size: 0.65rem;
     font-weight: 400;
-    letter-spacing: 0.28em;
+    letter-spacing: 0.3em;
     text-transform: uppercase;
     color: var(--accent-light);
-    margin-bottom: 0.75rem;
+    margin-bottom: 0.6rem;
+  }
+
+  .title-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(1rem, 2vw, 1.75rem);
   }
 
   h2 {
-    font-size: clamp(2rem, 4vw, 3.25rem);
+    font-size: clamp(1.6rem, 3.5vw, 2.5rem);
     font-weight: 200;
     color: var(--text-primary);
-    letter-spacing: 0.02em;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    white-space: nowrap;
   }
 
-  .rule {
-    width: 40px;
+  .line {
+    display: block;
     height: 1px;
-    background: var(--accent);
-    margin-top: 1.25rem;
-    margin-inline: auto;
-    transition: width 0.6s ease 0.4s;
+    flex: 1;
+    max-width: 120px;
+    transition: max-width 0.6s ease 0.3s, opacity 0.6s ease 0.3s;
+    opacity: 0;
   }
 
-  .section-title.visible .rule {
-    width: 80px;
+  .line-left {
+    background: linear-gradient(to right, transparent, var(--accent));
+  }
+
+  .line-right {
+    background: linear-gradient(to left, transparent, var(--accent));
+  }
+
+  .section-title.visible .line {
+    max-width: 120px;
+    opacity: 1;
+  }
+
+  @media (max-width: 600px) {
+    .line {
+      max-width: 60px;
+    }
+    .section-title.visible .line {
+      max-width: 60px;
+    }
   }
 </style>
