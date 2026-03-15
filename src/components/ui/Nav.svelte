@@ -4,10 +4,10 @@
   export let profileImg = '';
 
   const links = [
-    { href: '#work',       label: 'Work'       },
-    { href: '#skills',     label: 'Skills'     },
-    { href: '#experience', label: 'Experience' },
-    { href: '#about',      label: 'About'      },
+    { href: '#gozio',    label: 'Work'     },
+    { href: '#about',    label: 'About'    },
+    { href: '#skills',   label: 'Skills'   },
+    { href: '#projects', label: 'Projects' },
   ];
 
   let active     = '';
