@@ -1,6 +1,8 @@
 <script>
   import { onMount } from 'svelte';
 
+  export let profileImg = '';
+
   const links = [
     { href: '#work',       label: 'Work'       },
     { href: '#skills',     label: 'Skills'     },
@@ -37,7 +39,7 @@
   <div class="inner">
     <!-- Logo / name -->
     <a href="#hero" class="logo" aria-label="Back to top">
-      <span class="logo-initials">AM</span>
+      <img class="logo-avatar" src={profileImg} alt="Andrew Martin" />
       <span class="logo-name">Andrew Martin</span>
     </a>
 
@@ -101,17 +103,11 @@
     flex-shrink: 0;
   }
 
-  .logo-initials {
+  .logo-avatar {
     width: 32px;
     height: 32px;
-    border-radius: 6px;
-    background: var(--accent);
-    display: grid;
-    place-items: center;
-    font-size: 0.75rem;
-    font-weight: 500;
-    letter-spacing: 0.05em;
-    color: #fff;
+    border-radius: 50%;
+    object-fit: cover;
   }
 
   .logo-name {
