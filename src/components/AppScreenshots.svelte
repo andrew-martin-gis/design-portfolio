@@ -11,6 +11,8 @@
   let lightboxSrc = '';
   let lightboxAlt = '';
   let lightboxIndex = 0;
+  let lightboxImgEl: HTMLImageElement;
+  let transitioning = false;
 
   /* ── Screenshot grid height management ── */
   let gridHeight = 0;
@@ -28,16 +30,25 @@
     document.documentElement.classList.add('cursor-active');
   }
 
+  function crossfadeTo(newIndex: number) {
+    if (transitioning) return;
+    transitioning = true;
+    if (lightboxImgEl) lightboxImgEl.style.opacity = '0';
+    setTimeout(() => {
+      lightboxIndex = newIndex;
+      lightboxSrc = currentApp.images[lightboxIndex];
+      lightboxAlt = `${currentApp.name} screenshot ${lightboxIndex + 1}`;
+      if (lightboxImgEl) lightboxImgEl.style.opacity = '1';
+      transitioning = false;
+    }, 180);
+  }
+
   function lightboxPrev() {
-    lightboxIndex = (lightboxIndex - 1 + currentApp.images.length) % currentApp.images.length;
-    lightboxSrc = currentApp.images[lightboxIndex];
-    lightboxAlt = `${currentApp.name} screenshot ${lightboxIndex + 1}`;
+    crossfadeTo((lightboxIndex - 1 + currentApp.images.length) % currentApp.images.length);
   }
 
   function lightboxNext() {
-    lightboxIndex = (lightboxIndex + 1) % currentApp.images.length;
-    lightboxSrc = currentApp.images[lightboxIndex];
-    lightboxAlt = `${currentApp.name} screenshot ${lightboxIndex + 1}`;
+    crossfadeTo((lightboxIndex + 1) % currentApp.images.length);
   }
 
   function onBackdropClick(e: MouseEvent) {
@@ -100,14 +111,12 @@
       </svg>
     </button>
 
-    {#key lightboxIndex}
-      <img
-        src={lightboxSrc}
-        alt={lightboxAlt}
-        class="lightbox-img"
-        in:fade={{ duration: 200 }}
-      />
-    {/key}
+    <img
+      bind:this={lightboxImgEl}
+      src={lightboxSrc}
+      alt={lightboxAlt}
+      class="lightbox-img"
+    />
 
     <button class="lightbox-arrow lightbox-arrow-right" on:click|stopPropagation={lightboxNext} aria-label="Next screenshot">
       <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
@@ -214,6 +223,7 @@
     height: auto;
     border-radius: 12px;
     box-shadow: 0 8px 60px rgba(0, 0, 0, 0.7);
+    transition: opacity 180ms ease;
   }
 
   .lightbox-close {

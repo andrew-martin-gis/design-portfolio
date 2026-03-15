@@ -5,7 +5,7 @@ import ProjectCard from '../../components/ui/ProjectCard.svelte';
 import SectionTitle from '../../components/ui/SectionTitle.svelte';
 import { projects } from '../../data/projects.js';
 
-const base = import.meta.env.BASE_URL;
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const profileImg = `${base}/profile_picture.jpeg`;
 ---
 
