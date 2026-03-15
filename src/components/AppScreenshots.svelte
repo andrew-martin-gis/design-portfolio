@@ -19,11 +19,13 @@
     lightboxIndex = index;
     lightboxSrc = src;
     lightboxAlt = alt;
+    document.documentElement.classList.remove('cursor-active');
     dialog.showModal();
   }
 
   function closeLightbox() {
     dialog.close();
+    document.documentElement.classList.add('cursor-active');
   }
 
   function lightboxPrev() {
