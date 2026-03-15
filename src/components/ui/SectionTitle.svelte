@@ -5,23 +5,33 @@
   export let title = ''; // e.g. "Projects"
 
   let el;
+  let hydrated = false;
+  let visible  = false;
 
   onMount(() => {
+    // Mark as hydrated so CSS hides element for the reveal animation
+    hydrated = true;
+
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          el.classList.add('visible');
+          visible = true;
           observer.disconnect();
         }
       },
-      { threshold: 0.3 }
+      { threshold: 0.15 }
     );
     observer.observe(el);
     return () => observer.disconnect();
   });
 </script>
 
-<div class="section-title" bind:this={el}>
+<div
+  class="section-title"
+  class:hydrated
+  class:visible
+  bind:this={el}
+>
   {#if label}
     <span class="label">{label}</span>
   {/if}
@@ -33,14 +43,20 @@
 </div>
 
 <style>
+  /* Default: fully visible (SSR / no-JS fallback) */
   .section-title {
     margin-bottom: clamp(2rem, 4vw, 3rem);
     text-align: center;
+  }
+
+  /* Once JS hydrates, hide for the scroll-reveal animation */
+  .section-title.hydrated {
     opacity: 0;
     transform: translateY(24px);
     transition: opacity 0.7s ease, transform 0.7s ease;
   }
 
+  /* Reveal when IntersectionObserver fires */
   .section-title.visible {
     opacity: 1;
     transform: none;
