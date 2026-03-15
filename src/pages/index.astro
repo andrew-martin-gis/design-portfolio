@@ -5,10 +5,13 @@ import Nav           from '../components/ui/Nav.svelte';
 import ProjectCard   from '../components/ui/ProjectCard.svelte';
 import SkillPill     from '../components/ui/SkillPill.svelte';
 import SectionTitle  from '../components/ui/SectionTitle.svelte';
-import StatCounter   from '../components/ui/StatCounter.svelte';
-import { projects }  from '../data/projects.js';
-import { skills }    from '../data/skills.js';
+import AppCarousel    from '../components/AppCarousel.svelte';
+import AppScreenshots from '../components/AppScreenshots.svelte';
+import StoreButtons   from '../components/StoreButtons.svelte';
+import { projects }   from '../data/projects.js';
+import { skills }     from '../data/skills.js';
 import { experience } from '../data/experience.js';
+import { gozioApps }  from '../data/gozioApps';
 
 const featured = projects.filter(p => p.featured);
 ---
@@ -26,8 +29,6 @@ const featured = projects.filter(p => p.featured);
       <div class="accent-line"></div>
       <h1 class="hero-name">Andrew Martin</h1>
       <p class="hero-role">Digital Map Designer &amp; GIS Analyst</p>
-      <p class="hero-hint">Click a marker to explore projects</p>
-
       <a href="#work" class="scroll-arrow" aria-label="Scroll to work">
         <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
           <path d="M10 3v14M4 11l6 6 6-6" stroke="currentColor" stroke-width="1.5"
@@ -94,6 +95,29 @@ const featured = projects.filter(p => p.featured);
     </div>
   </section>
 
+  <!-- ═══════════════════════════════════════════════════════ GOZIO ════════ -->
+  <section id="gozio" class="section gozio-section">
+    <div class="container">
+      <SectionTitle label="Featured Work" title="Gozio Indoor Wayfinding" client:visible />
+      <p class="gozio-intro">
+        At Gozio Health I've designed and shipped indoor wayfinding experiences for
+        healthcare systems across the United States. These are some of the apps that
+        use the maps I built.
+      </p>
+
+      <!-- Carousel (top) -->
+      <AppCarousel client:visible apps={gozioApps} />
+
+      <!-- Screenshots (middle) -->
+      <div class="screenshots-row">
+        <AppScreenshots client:visible apps={gozioApps} />
+      </div>
+
+      <!-- Store buttons (bottom) — reactive to active app via store -->
+      <StoreButtons client:visible apps={gozioApps} />
+    </div>
+  </section>
+
   <!-- ═══════════════════════════════════════════════════════ EXPERIENCE ══ -->
   <section id="experience" class="section">
     <div class="container">
@@ -123,38 +147,106 @@ const featured = projects.filter(p => p.featured);
   <section id="about" class="section about-section">
     <div class="container">
       <SectionTitle label="Who I am" title="About" client:visible />
-      <div class="about-grid">
+      <div class="about-asymmetric">
 
-        <div class="about-avatar-col">
-          <div class="avatar">
-            <span class="avatar-initials">AM</span>
+        <!-- Left column: Bio + Education -->
+        <div class="about-left">
+
+          <!-- Bio card -->
+          <div class="about-card">
+            <h3 class="about-card-heading">Bio</h3>
+            <!-- TODO: Replace with bio -->
+            <p>
+              Background in applied geography and spatial data science, currently working
+              as a digital map designer building indoor wayfinding experiences for
+              healthcare systems across the United States.
+            </p>
+            <p>
+              Focused on the intersection of cartographic precision and interactive
+              design — from large-scale indoor mapping pipelines to environmental GIS
+              and transit equity analysis.
+            </p>
+            <p>
+              Comfortable across the full stack of geospatial work: data modelling,
+              custom rendering, and making complex spatial information legible for
+              the people who depend on it every day.
+            </p>
+            <a href="mailto:andrew.martin.gis@outlook.com" class="contact-link">
+              Get in touch →
+            </a>
+          </div>
+
+          <!-- Education card -->
+          <div class="about-card">
+            <h3 class="about-card-heading">Education</h3>
+            <!-- TODO: Replace with real education -->
+            <div class="edu-entry">
+              <span class="edu-degree">B.S. Geography — GIS Concentration</span>
+              <span class="edu-school">University of Louisville</span>
+              <span class="edu-year">2020</span>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Right column: Experience -->
+        <div class="about-right">
+          <div class="about-card about-card-tall">
+            <h3 class="about-card-heading">Experience</h3>
+            <!-- TODO: Replace with real experience -->
+
+            <div class="exp-entry">
+              <div class="exp-header">
+                <span class="exp-title">Digital Map Designer</span>
+                <span class="exp-range">Jan 2021 – Present</span>
+              </div>
+              <span class="exp-company">Gozio Health</span>
+              <p class="exp-desc">
+                Designed and delivered over 1,000 indoor wayfinding maps for hospital
+                networks across the US, collaborating with clinical and facilities teams.
+              </p>
+            </div>
+
+            <hr class="exp-divider" />
+
+            <div class="exp-entry">
+              <div class="exp-header">
+                <span class="exp-title">GIS Analyst (Intern)</span>
+                <span class="exp-range">May 2020 – Dec 2020</span>
+              </div>
+              <span class="exp-company">Placeholder Organization</span>
+              <p class="exp-desc">
+                Supported spatial analysis workflows and data visualisation projects
+                for environmental and transit equity research initiatives.
+              </p>
+            </div>
+
+            <hr class="exp-divider" />
+
+            <div class="exp-entry">
+              <div class="exp-header">
+                <span class="exp-title">Research Assistant</span>
+                <span class="exp-range">Aug 2019 – May 2020</span>
+              </div>
+              <span class="exp-company">University of Louisville</span>
+              <p class="exp-desc">
+                Assisted faculty with geospatial data collection, processing, and
+                cartographic output for applied geography research projects.
+              </p>
+            </div>
+
           </div>
         </div>
 
-        <div class="about-bio">
-          <p>
-            I'm a digital map designer at Gozio Health, where I've built over 1,000
-            indoor wayfinding maps for healthcare systems across the United States.
-            My background is in applied geography — I care about spatial precision,
-            clean cartography, and making geographic data legible for the people who
-            depend on it.
-          </p>
-          <p>
-            Outside of indoor mapping I work on environmental GIS, transit equity,
-            and data visualisation projects that sit at the edge of spatial analysis
-            and interactive design.
-          </p>
-          <a href="mailto:andrew.martin.gis@outlook.com" class="contact-link">
-            Get in touch →
-          </a>
-        </div>
-
-        <div class="about-stats">
-          <StatCounter value={1000} suffix="+" label="Indoor maps designed" comma={true} client:visible />
-          <StatCounter value={4}    suffix=" yrs" label="At Gozio Health"   client:visible />
-          <StatCounter value={50}   suffix="+"    label="Training guide sections" client:visible />
-        </div>
       </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════ PROJECTS ═════ -->
+  <section id="projects" class="section">
+    <div class="container">
+      <h2>Projects</h2>
+      <!-- TODO: Projects section — planning in progress -->
     </div>
   </section>
 
@@ -238,18 +330,6 @@ const featured = projects.filter(p => p.featured);
     margin-top: 0.8rem;
     opacity: 0;
     animation: slideUp 1s cubic-bezier(0.22, 1, 0.36, 1) forwards 0.75s;
-  }
-
-  .hero-hint {
-    font-family: var(--font);
-    font-size: 0.65rem;
-    font-weight: 300;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--text-muted);
-    margin-top: 1rem;
-    opacity: 0;
-    animation: fadeIn 1s ease forwards 1.2s;
   }
 
   .scroll-arrow {
@@ -483,66 +563,49 @@ const featured = projects.filter(p => p.featured);
     background: linear-gradient(to bottom, transparent, var(--bg-surface) 10%, var(--bg-surface) 90%, transparent);
   }
 
-  .about-grid {
+  .about-asymmetric {
     display: grid;
-    grid-template-columns: auto 1fr auto;
-    gap: 3rem 4rem;
+    grid-template-columns: 2fr 3fr;
+    gap: var(--gap);
     align-items: start;
   }
 
-  .about-avatar-col {
+  .about-left {
     display: flex;
     flex-direction: column;
-    align-items: center;
+    gap: var(--gap);
   }
 
-  .avatar {
-    width: 96px;
-    height: 96px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(59, 130, 246, 0.05));
-    border: 1px solid rgba(59, 130, 246, 0.3);
-    display: grid;
-    place-items: center;
-    position: relative;
-    animation: avatarPulse 4s ease-in-out infinite;
+  .about-right {
+    display: flex;
+    flex-direction: column;
   }
 
-  .avatar::before {
-    content: '';
-    position: absolute;
-    inset: -6px;
-    border-radius: 50%;
-    border: 1px solid rgba(59, 130, 246, 0.15);
-    animation: avatarRing 4s ease-in-out infinite 0.5s;
+  .about-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1.75rem 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
   }
 
-  @keyframes avatarPulse {
-    0%, 100% { border-color: rgba(59, 130, 246, 0.3); }
-    50%       { border-color: rgba(59, 130, 246, 0.55); }
+  .about-card-tall {
+    height: 100%;
   }
 
-  @keyframes avatarRing {
-    0%, 100% { opacity: 0.4; transform: scale(1); }
-    50%       { opacity: 1;   transform: scale(1.04); }
-  }
-
-  .avatar-initials {
-    font-size: 1.4rem;
-    font-weight: 200;
-    letter-spacing: 0.1em;
+  .about-card-heading {
+    font-size: 0.72rem;
+    font-weight: 400;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
     color: var(--accent-light);
+    margin-bottom: 0.25rem;
   }
 
-  .about-bio {
-    display: flex;
-    flex-direction: column;
-    gap: 1.25rem;
-    max-width: 56ch;
-  }
-
-  .about-bio p {
-    font-size: 1.05rem;
+  .about-card p {
+    font-size: 0.95rem;
     font-weight: 300;
     line-height: 1.75;
     color: var(--text-secondary);
@@ -554,28 +617,82 @@ const featured = projects.filter(p => p.featured);
     font-weight: 400;
     letter-spacing: 0.1em;
     color: var(--accent-light);
-    margin-top: 0.5rem;
+    margin-top: 0.25rem;
     transition: letter-spacing var(--transition);
   }
-
   .contact-link:hover { letter-spacing: 0.18em; }
 
-  .about-stats {
+  /* Education entries */
+  .edu-entry {
     display: flex;
     flex-direction: column;
-    gap: 2rem;
+    gap: 0.2rem;
+  }
+  .edu-degree {
+    font-size: 0.95rem;
+    font-weight: 400;
+    color: var(--text-primary);
+  }
+  .edu-school {
+    font-size: 0.85rem;
+    font-weight: 300;
+    color: var(--text-secondary);
+  }
+  .edu-year {
+    font-size: 0.75rem;
+    font-weight: 300;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
   }
 
-  @media (max-width: 900px) {
-    .about-grid {
+  /* Experience entries */
+  .exp-entry {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    padding-block: 0.25rem;
+  }
+  .exp-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  .exp-title {
+    font-size: 0.95rem;
+    font-weight: 400;
+    color: var(--text-primary);
+  }
+  .exp-range {
+    font-size: 0.72rem;
+    font-weight: 300;
+    letter-spacing: 0.1em;
+    color: var(--accent-light);
+    white-space: nowrap;
+  }
+  .exp-company {
+    font-size: 0.82rem;
+    font-weight: 300;
+    color: var(--text-muted);
+    letter-spacing: 0.05em;
+  }
+  .exp-desc {
+    font-size: 0.85rem;
+    font-weight: 300;
+    line-height: 1.65;
+    color: var(--text-secondary);
+    margin-top: 0.2rem;
+  }
+  .exp-divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin-block: 0.25rem;
+  }
+
+  @media (max-width: 860px) {
+    .about-asymmetric {
       grid-template-columns: 1fr;
-      gap: 2rem;
-    }
-    .about-avatar-col { align-items: flex-start; }
-    .about-stats {
-      flex-direction: row;
-      flex-wrap: wrap;
-      gap: 1.5rem;
     }
   }
 
@@ -611,6 +728,24 @@ const featured = projects.filter(p => p.featured);
   }
 
   .footer-links a:hover { color: var(--accent-light); }
+
+  /* ── Gozio ───────────────────────────────────────────────────────────── */
+  .gozio-section {
+    background: linear-gradient(to bottom, transparent, var(--bg-surface) 10%, var(--bg-surface) 90%, transparent);
+  }
+
+  .gozio-intro {
+    font-size: 1rem;
+    font-weight: 300;
+    line-height: 1.75;
+    color: var(--text-secondary);
+    max-width: 60ch;
+    margin-bottom: 3rem;
+  }
+
+  .screenshots-row {
+    margin-block: 2.5rem;
+  }
 
   /* ── Timeline scroll reveal ──────────────────────────────────────────── */
   .timeline-entry .timeline-card {
