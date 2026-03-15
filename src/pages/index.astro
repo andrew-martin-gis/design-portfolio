@@ -329,23 +329,6 @@ const profileImg = `${base}/profile_picture.jpeg`;
   </footer>
 </Base>
 
-<script>
-  // Scroll to absolute bottom when arriving via #bottom hash
-  function scrollToBottomIfHash() {
-    if (window.location.hash === '#bottom') {
-      // Small delay to let dynamic content (globe, animations) settle
-      setTimeout(() => {
-        window.scrollTo({ top: document.body.scrollHeight, behavior: 'instant' });
-        // Clear the hash so it doesn't interfere with future navigation
-        history.replaceState(null, '', window.location.pathname);
-      }, 100);
-    }
-  }
-  // Handle both full page loads and Astro client-side transitions
-  scrollToBottomIfHash();
-  document.addEventListener('astro:page-load', scrollToBottomIfHash);
-</script>
-
 <style>
   /* ── Hero ───────────────────────────────────────────────────────────── */
   .hero {

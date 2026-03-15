@@ -62,6 +62,24 @@ const ogImg     = ogImage ?? `${siteUrl}${base}og.svg`;
     />
 
     <ClientRouter />
+
+    <!-- Scroll-to-bottom: runs before first paint on both full loads and client transitions -->
+    <script is:inline>
+      function scrollBottomIfNeeded() {
+        if (window.location.hash === '#bottom') {
+          window.scrollTo(0, document.body.scrollHeight);
+          history.replaceState(null, '', window.location.pathname);
+        }
+      }
+      // Client-side transition: fires after DOM swap, before browser paint
+      document.addEventListener('astro:after-swap', scrollBottomIfNeeded);
+      // Full page load: run immediately (script is in <head>, body exists by parse time)
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', scrollBottomIfNeeded);
+      } else {
+        scrollBottomIfNeeded();
+      }
+    </script>
   </head>
   <body>
     <ScrollProgress client:only="svelte" />
