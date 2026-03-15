@@ -2,18 +2,11 @@
 import Base          from '../layouts/Base.astro';
 import Globe         from '../components/three/Globe.svelte';
 import Nav           from '../components/ui/Nav.svelte';
-import ProjectCard   from '../components/ui/ProjectCard.svelte';
-import SkillPill     from '../components/ui/SkillPill.svelte';
 import SectionTitle  from '../components/ui/SectionTitle.svelte';
 import AppCarousel    from '../components/AppCarousel.svelte';
 import AppScreenshots from '../components/AppScreenshots.svelte';
 import StoreButtons   from '../components/StoreButtons.svelte';
-import { projects }   from '../data/projects.js';
-import { skills }     from '../data/skills.js';
-import { experience } from '../data/experience.js';
 import { gozioApps }  from '../data/gozioApps';
-
-const featured = projects.filter(p => p.featured);
 ---
 
 <Base>
@@ -38,63 +31,6 @@ const featured = projects.filter(p => p.featured);
     </div>
   </section>
 
-  <!-- ═══════════════════════════════════════════════════════ WORK ═══════ -->
-  <section id="work" class="section">
-    <div class="container">
-      <SectionTitle label="Selected Work" title="Projects" client:visible />
-      <div class="project-grid">
-        {featured.map((p, i) => (
-          <ProjectCard
-            slug={p.slug}
-            title={p.title}
-            subtitle={p.subtitle}
-            description={p.description}
-            tags={p.tags}
-            gradient={p.gradient}
-            year={p.year}
-            type={p.type}
-            index={i}
-            client:visible
-          />
-        ))}
-      </div>
-
-      <div class="all-projects">
-        <a href={`${import.meta.env.BASE_URL}projects/`} class="ghost-btn">
-          View all {projects.length} projects
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-            <path d="M2 7h10M7 2l5 5-5 5" stroke="currentColor" stroke-width="1.5"
-                  stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </a>
-      </div>
-    </div>
-  </section>
-
-  <!-- ═══════════════════════════════════════════════════════ SKILLS ══════ -->
-  <section id="skills" class="section skills-section">
-    <div class="container">
-      <SectionTitle label="Capabilities" title="Skills" client:visible />
-      <div class="skills-grid">
-        {skills.map(group => (
-          <div class="skill-group">
-            <h3 class="skill-category">{group.category}</h3>
-            <div class="pills">
-              {group.items.map((item, i) => (
-                <SkillPill
-                  name={item.name}
-                  context={item.context}
-                  delay={i * 55}
-                  client:visible
-                />
-              ))}
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  </section>
-
   <!-- ═══════════════════════════════════════════════════════ GOZIO ════════ -->
   <section id="gozio" class="section gozio-section">
     <div class="container">
@@ -115,31 +51,6 @@ const featured = projects.filter(p => p.featured);
 
       <!-- Store buttons (bottom) — reactive to active app via store -->
       <StoreButtons client:visible apps={gozioApps} />
-    </div>
-  </section>
-
-  <!-- ═══════════════════════════════════════════════════════ EXPERIENCE ══ -->
-  <section id="experience" class="section">
-    <div class="container">
-      <SectionTitle label="Background" title="Experience" client:visible />
-      <div class="timeline">
-        {experience.map((entry, idx) => (
-          <div class={`timeline-entry ${idx % 2 === 0 ? 'left' : 'right'}`}>
-            <div class="timeline-card">
-              <span class="entry-period">{entry.period}</span>
-              <h3 class="entry-role">{entry.role}</h3>
-              <p class="entry-org">{entry.org}</p>
-              <ul class="entry-bullets">
-                {entry.bullets.map(b => <li>{b}</li>)}
-              </ul>
-            </div>
-            <div class="timeline-node">
-              <span class="node-icon">{entry.type === 'work' ? '◈' : '◇'}</span>
-            </div>
-            <div class="timeline-spacer"></div>
-          </div>
-        ))}
-      </div>
     </div>
   </section>
 
@@ -351,213 +262,6 @@ const featured = projects.filter(p => p.featured);
     50%       { transform: translateY(6px); opacity: 0.8; }
   }
 
-  /* ── Work ────────────────────────────────────────────────────────────── */
-  .project-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
-    gap: var(--gap);
-  }
-
-  .all-projects {
-    margin-top: 3rem;
-    display: flex;
-    justify-content: center;
-  }
-
-  .ghost-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 0.8rem;
-    font-weight: 400;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--text-secondary);
-    padding: 0.65rem 1.5rem;
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    transition: color var(--transition), border-color var(--transition);
-  }
-
-  .ghost-btn:hover {
-    color: var(--accent-light);
-    border-color: rgba(59, 130, 246, 0.4);
-  }
-
-  /* ── Skills ──────────────────────────────────────────────────────────── */
-  .skills-section {
-    background: linear-gradient(to bottom, transparent, var(--bg-surface) 20%, var(--bg-surface) 80%, transparent);
-  }
-
-  .skills-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 2.5rem;
-  }
-
-  .skill-category {
-    font-size: 0.72rem;
-    font-weight: 400;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--accent-light);
-    margin-bottom: 1rem;
-  }
-
-  .pills {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-  }
-
-  /* ── Experience ──────────────────────────────────────────────────────── */
-  .timeline {
-    position: relative;
-  }
-
-  /* Central spine */
-  .timeline::before {
-    content: '';
-    position: absolute;
-    left: 50%;
-    top: 0;
-    bottom: 0;
-    width: 1px;
-    background: linear-gradient(to bottom, transparent, var(--border) 10%, var(--border) 90%, transparent);
-    transform: translateX(-50%);
-  }
-
-  .timeline-entry {
-    display: grid;
-    grid-template-columns: 1fr 2.5rem 1fr;
-    align-items: start;
-    padding-bottom: 3rem;
-  }
-
-  /* Card: left entries go in col 1, right entries go in col 3 */
-  .timeline-entry.left  .timeline-card    { grid-column: 1; grid-row: 1; text-align: right; }
-  .timeline-entry.right .timeline-card    { grid-column: 3; grid-row: 1; }
-  .timeline-entry.left  .timeline-node   { grid-column: 2; grid-row: 1; }
-  .timeline-entry.right .timeline-node   { grid-column: 2; grid-row: 1; }
-  .timeline-entry.left  .timeline-spacer  { grid-column: 3; grid-row: 1; }
-  .timeline-entry.right .timeline-spacer  { grid-column: 1; grid-row: 1; }
-
-  .timeline-node {
-    display: flex;
-    justify-content: center;
-    padding-top: 1.1rem;
-    z-index: 1;
-  }
-
-  .node-icon {
-    font-size: 0.9rem;
-    color: var(--accent);
-    background: var(--bg);
-    display: block;
-    padding: 3px;
-    line-height: 1;
-  }
-
-  .timeline-card {
-    background: var(--bg-surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-    padding: 1.5rem 1.75rem;
-    transition: border-color var(--transition), box-shadow var(--transition);
-  }
-
-  .timeline-card:hover {
-    border-color: var(--border-hover);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-  }
-
-  .entry-period {
-    display: block;
-    font-size: 0.68rem;
-    font-weight: 400;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--accent-light);
-    margin-bottom: 0.5rem;
-  }
-
-  .entry-role {
-    font-size: 1.05rem;
-    font-weight: 400;
-    color: var(--text-primary);
-    letter-spacing: 0.01em;
-    margin-bottom: 0.2rem;
-  }
-
-  .entry-org {
-    font-size: 0.82rem;
-    font-weight: 300;
-    color: var(--text-muted);
-    letter-spacing: 0.06em;
-    margin-bottom: 1rem;
-  }
-
-  .entry-bullets {
-    list-style: none;
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-
-  .entry-bullets li {
-    font-size: 0.875rem;
-    font-weight: 300;
-    line-height: 1.65;
-    color: var(--text-secondary);
-    padding-left: 1.1rem;
-    position: relative;
-  }
-
-  .entry-bullets li::before {
-    content: '—';
-    position: absolute;
-    left: 0;
-    color: var(--accent);
-    font-size: 0.7rem;
-    top: 0.18em;
-  }
-
-  /* Right-align left-side bullets */
-  .timeline-entry.left .entry-bullets li {
-    padding-left: 0;
-    padding-right: 1.1rem;
-  }
-
-  .timeline-entry.left .entry-bullets li::before {
-    left: auto;
-    right: 0;
-  }
-
-  @media (max-width: 720px) {
-    .timeline::before { left: 0.75rem; }
-
-    .timeline-entry {
-      grid-template-columns: 1.5rem 1fr;
-      gap: 0 1rem;
-    }
-
-    .timeline-entry.left  .timeline-card,
-    .timeline-entry.right .timeline-card    { grid-column: 2; grid-row: 1; text-align: left; }
-    .timeline-entry.left  .timeline-node,
-    .timeline-entry.right .timeline-node   { grid-column: 1; grid-row: 1; }
-    .timeline-entry.left  .timeline-spacer,
-    .timeline-entry.right .timeline-spacer  { display: none; }
-
-    .timeline-entry.left .entry-bullets li {
-      padding-left: 1.1rem;
-      padding-right: 0;
-    }
-    .timeline-entry.left .entry-bullets li::before {
-      left: 0;
-      right: auto;
-    }
-  }
-
   /* ── About ───────────────────────────────────────────────────────────── */
   .about-section {
     background: linear-gradient(to bottom, transparent, var(--bg-surface) 10%, var(--bg-surface) 90%, transparent);
@@ -747,18 +451,6 @@ const featured = projects.filter(p => p.featured);
     margin-block: 2.5rem;
   }
 
-  /* ── Timeline scroll reveal ──────────────────────────────────────────── */
-  .timeline-entry .timeline-card {
-    opacity: 0;
-    transition: opacity 0.65s ease, transform 0.65s ease;
-  }
-  .timeline-entry.left  .timeline-card { transform: translateX(-28px); }
-  .timeline-entry.right .timeline-card { transform: translateX( 28px); }
-  .timeline-entry.visible .timeline-card {
-    opacity: 1;
-    transform: none;
-  }
-
   /* ── Animations ──────────────────────────────────────────────────────── */
   @keyframes slideUp {
     from { opacity: 0; transform: translateY(22px); }
@@ -771,20 +463,3 @@ const featured = projects.filter(p => p.featured);
   }
 </style>
 
-<script>
-  function initTimeline() {
-    const entries = document.querySelectorAll('.timeline-entry:not(.visible)');
-    if (!entries.length) return;
-    const obs = new IntersectionObserver((items) => {
-      items.forEach((item, i) => {
-        if (item.isIntersecting) {
-          setTimeout(() => item.target.classList.add('visible'), i * 120);
-          obs.unobserve(item.target);
-        }
-      });
-    }, { threshold: 0.15 });
-    entries.forEach(el => obs.observe(el));
-  }
-  // Fires on initial load AND after every client-side page navigation
-  document.addEventListener('astro:page-load', initTimeline);
-</script>
