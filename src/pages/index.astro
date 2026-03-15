@@ -6,6 +6,7 @@ import SectionTitle  from '../components/ui/SectionTitle.svelte';
 import AppCarousel    from '../components/AppCarousel.svelte';
 import AppScreenshots from '../components/AppScreenshots.svelte';
 import StoreButtons   from '../components/StoreButtons.svelte';
+import CountUp        from '../components/CountUp.svelte';
 import { gozioApps }  from '../data/gozioApps';
 ---
 
@@ -34,12 +35,46 @@ import { gozioApps }  from '../data/gozioApps';
   <!-- ═══════════════════════════════════════════════════════ GOZIO ════════ -->
   <section id="gozio" class="section gozio-section">
     <div class="container">
-      <SectionTitle label="Featured Work" title="Gozio Indoor Wayfinding" client:visible />
-      <p class="gozio-intro">
-        At Gozio Health I've designed and shipped indoor wayfinding experiences for
-        healthcare systems across the United States. These are some of the apps that
-        use the maps I built.
-      </p>
+      <SectionTitle label="Featured Work" title="Indoor Wayfinding at Gozio" client:visible />
+
+      <!-- Bio + Stats -->
+      <div class="gozio-intro-row">
+        <div class="gozio-bio">
+          <div class="avatar">AM</div>
+          <div class="bio-text">
+            <p>
+              I'm a digital map designer at Gozio Health, where I've built over 1,000
+              indoor wayfinding maps for healthcare systems across the United States.
+              My background is in applied geography — I care about spatial precision,
+              clean cartography, and making geographic data legible for the people who
+              depend on it.
+            </p>
+            <p>
+              Outside of indoor mapping I work on environmental GIS, transit equity,
+              and data visualisation projects that sit at the edge of spatial analysis
+              and interactive design.
+            </p>
+            <a href="mailto:andrew.martin.gis@outlook.com" class="contact-link">
+              Get in touch →
+            </a>
+          </div>
+        </div>
+
+        <div class="gozio-stats">
+          <div class="stat">
+            <span class="stat-number"><CountUp client:visible target={1000} suffix="+" duration={2000} /></span>
+            <span class="stat-label">Indoor Maps Designed</span>
+          </div>
+          <div class="stat">
+            <span class="stat-number"><CountUp client:visible target={4} suffix=" yrs" duration={1800} /></span>
+            <span class="stat-label">At Gozio Health</span>
+          </div>
+          <div class="stat">
+            <span class="stat-number"><CountUp client:visible target={50} suffix="+" duration={1600} /></span>
+            <span class="stat-label">Training Guide Sections</span>
+          </div>
+        </div>
+      </div>
 
       <!-- Carousel (top) -->
       <AppCarousel client:visible apps={gozioApps} />
@@ -66,21 +101,14 @@ import { gozioApps }  from '../data/gozioApps';
           <!-- Bio card -->
           <div class="about-card">
             <h3 class="about-card-heading">Bio</h3>
-            <!-- TODO: Replace with bio -->
             <p>
-              Background in applied geography and spatial data science, currently working
-              as a digital map designer building indoor wayfinding experiences for
-              healthcare systems across the United States.
-            </p>
-            <p>
-              Focused on the intersection of cartographic precision and interactive
-              design — from large-scale indoor mapping pipelines to environmental GIS
-              and transit equity analysis.
-            </p>
-            <p>
-              Comfortable across the full stack of geospatial work: data modelling,
-              custom rendering, and making complex spatial information legible for
-              the people who depend on it every day.
+              GIS professional with nearly 4 years of experience in indoor mapping,
+              cartographic design, QA, data analysis, and geospatial tool development.
+              Designed and maintained over 1,000 digital indoor maps for healthcare
+              wayfinding. Experienced in the full mapping lifecycle — from CAD plan
+              processing and 3D rendering to navigation, QA, and content management.
+              Developed Python automation tools for mapping workflows and data
+              analysis/monitoring.
             </p>
             <a href="mailto:andrew.martin.gis@outlook.com" class="contact-link">
               Get in touch →
@@ -90,12 +118,15 @@ import { gozioApps }  from '../data/gozioApps';
           <!-- Education card -->
           <div class="about-card">
             <h3 class="about-card-heading">Education</h3>
-            <!-- TODO: Replace with real education -->
             <div class="edu-entry">
-              <span class="edu-degree">B.S. Geography — GIS Concentration</span>
+              <span class="edu-degree">Bachelor of Science in Applied Geography, Geospatial Technologies</span>
+              <span class="edu-range">Aug 2018 – Dec 2023</span>
               <span class="edu-school">University of Louisville</span>
-              <span class="edu-year">2020</span>
             </div>
+            <ul class="about-bullets">
+              <li><strong>Thesis:</strong> Flood impact, frequency, and hydroclimatological analysis of the July 2022 Eastern Kentucky flood event — spatial analysis and hydrological modeling of Whitesburg, KY</li>
+              <li><strong>Coursework:</strong> Remote Sensing, Spatial Statistics, Web GIS, Cartographic Design, Database Design, Hydrology, Python for GIS</li>
+            </ul>
           </div>
 
         </div>
@@ -104,46 +135,22 @@ import { gozioApps }  from '../data/gozioApps';
         <div class="about-right">
           <div class="about-card about-card-tall">
             <h3 class="about-card-heading">Experience</h3>
-            <!-- TODO: Replace with real experience -->
 
             <div class="exp-entry">
               <div class="exp-header">
                 <span class="exp-title">Digital Map Designer</span>
-                <span class="exp-range">Jan 2021 – Present</span>
+                <span class="exp-range">Jul 2022 – Mar 2026</span>
               </div>
               <span class="exp-company">Gozio Health</span>
-              <p class="exp-desc">
-                Designed and delivered over 1,000 indoor wayfinding maps for hospital
-                networks across the US, collaborating with clinical and facilities teams.
-              </p>
-            </div>
-
-            <hr class="exp-divider" />
-
-            <div class="exp-entry">
-              <div class="exp-header">
-                <span class="exp-title">GIS Analyst (Intern)</span>
-                <span class="exp-range">May 2020 – Dec 2020</span>
-              </div>
-              <span class="exp-company">Placeholder Organization</span>
-              <p class="exp-desc">
-                Supported spatial analysis workflows and data visualisation projects
-                for environmental and transit equity research initiatives.
-              </p>
-            </div>
-
-            <hr class="exp-divider" />
-
-            <div class="exp-entry">
-              <div class="exp-header">
-                <span class="exp-title">Research Assistant</span>
-                <span class="exp-range">Aug 2019 – May 2020</span>
-              </div>
-              <span class="exp-company">University of Louisville</span>
-              <p class="exp-desc">
-                Assisted faculty with geospatial data collection, processing, and
-                cartographic output for applied geography research projects.
-              </p>
+              <ul class="about-bullets">
+                <li>Designed and maintained over 1,000 digital 3D indoor maps for healthcare wayfinding across hospitals, medical offices, parking structures, and multi-building campuses using JOSM and proprietary 3D rendering software</li>
+                <li>Managed the full indoor mapping production lifecycle: CAD plan conversion with precision scaling, multi-floor .osm architecture, XML theme file maintenance for 3D rendering, navigation paths, POI tagging, and web portal content management</li>
+                <li>Built a multi-client BLE beacon monitoring pipeline (Python, pandas, REST API, openpyxl) automating battery health reporting across all healthcare clients replacing a manual per-client CSV process with priority-ranked Excel reports featuring voltage statistics, battery replacement projections, and missing beacon alerts</li>
+                <li>Developed mapping automation and QA tools including OSM coordinate extraction, PNG calibration rotation (2D rotation matrix), POI/elevator CSV export, bulk OSM bounds extraction, and an Android ARGB-to-hex color converter</li>
+                <li>Authored the company's mapper training guide: a 4-level, 50+ section knowledge base covering JOSM workflows, mapping assets, beacon placement, terminal commands, publishing workflows, and troubleshooting</li>
+                <li>Led end-to-end client projects, owning all maps across all sites for multiple clients; collaborated with client success, implementation, engineering, product, and content teams</li>
+                <li>Performed QA on all map deliverables, verifying navigation accuracy, 3D render integrity, and overall design consistency before client-facing deployment</li>
+              </ul>
             </div>
 
           </div>
@@ -342,11 +349,11 @@ import { gozioApps }  from '../data/gozioApps';
     font-weight: 300;
     color: var(--text-secondary);
   }
-  .edu-year {
-    font-size: 0.75rem;
+  .edu-range {
+    font-size: 0.72rem;
     font-weight: 300;
     letter-spacing: 0.1em;
-    color: var(--text-muted);
+    color: var(--accent-light);
   }
 
   /* Experience entries */
@@ -394,6 +401,39 @@ import { gozioApps }  from '../data/gozioApps';
     margin-block: 0.25rem;
   }
 
+  /* Bullet lists inside about cards */
+  .about-bullets {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+  .about-bullets li {
+    position: relative;
+    padding-left: 1rem;
+    font-size: 0.85rem;
+    font-weight: 300;
+    line-height: 1.65;
+    color: var(--text-secondary);
+  }
+  .about-bullets li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.55em;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--accent-light);
+    opacity: 0.6;
+  }
+  .about-bullets strong {
+    font-weight: 500;
+    color: var(--text-primary);
+  }
+
   @media (max-width: 860px) {
     .about-asymmetric {
       grid-template-columns: 1fr;
@@ -438,17 +478,101 @@ import { gozioApps }  from '../data/gozioApps';
     background: linear-gradient(to bottom, transparent, var(--bg-surface) 10%, var(--bg-surface) 90%, transparent);
   }
 
-  .gozio-intro {
-    font-size: 1rem;
-    font-weight: 300;
-    line-height: 1.75;
-    color: var(--text-secondary);
-    max-width: 60ch;
+  .screenshots-row {
+    margin-block: 2.5rem;
+  }
+
+  /* Gozio intro row: bio + stats */
+  .gozio-intro-row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 3rem;
+    align-items: center;
     margin-bottom: 3rem;
   }
 
-  .screenshots-row {
-    margin-block: 2.5rem;
+  .gozio-bio {
+    display: flex;
+    gap: 1.5rem;
+    align-items: flex-start;
+  }
+
+  .avatar {
+    flex-shrink: 0;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: var(--bg-surface);
+    border: 1.5px solid var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    color: var(--accent-light);
+  }
+
+  .bio-text {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .bio-text p {
+    font-size: 0.92rem;
+    font-weight: 300;
+    line-height: 1.75;
+    color: var(--text-secondary);
+  }
+
+  .gozio-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    min-width: 180px;
+  }
+
+  .stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .stat-number {
+    font-size: 2.2rem;
+    font-weight: 200;
+    color: var(--text-primary);
+    line-height: 1.2;
+  }
+
+  .stat-label {
+    font-size: 0.65rem;
+    font-weight: 400;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-top: 0.15rem;
+  }
+
+  @media (max-width: 860px) {
+    .gozio-intro-row {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+    .gozio-stats {
+      flex-direction: row;
+      justify-content: space-around;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .gozio-bio {
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
   }
 
   /* ── Animations ──────────────────────────────────────────────────────── */
