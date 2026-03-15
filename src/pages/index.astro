@@ -258,19 +258,19 @@ const profileImg = `${base}/profile_picture.jpeg`;
             </li>
             <li>
               <span class="project-icon">💻</span>
-              <a href="https://andrew-martin-gis.github.io/portfolio/project7.html" target="_blank" rel="noopener noreferrer">Android ARGB to Hex Color Converter Python Script</a>
+              <a href={`${base}projects/argb-convert`}>Android ARGB to Hex Color Converter Python Script</a>
             </li>
             <li>
               <span class="project-icon">💻</span>
-              <a href="https://andrew-martin-gis.github.io/portfolio/project8.html" target="_blank" rel="noopener noreferrer">OSM Portal Bounding Box Coordinate Extractor</a>
+              <a href={`${base}projects/osm-find-coords`}>OSM Portal Bounding Box Coordinate Extractor</a>
             </li>
             <li>
               <span class="project-icon">💻</span>
-              <a href="https://andrew-martin-gis.github.io/portfolio/project9.html" target="_blank" rel="noopener noreferrer">OSM XML Points of Interest to CSV Parser</a>
+              <a href={`${base}projects/osm-poi-parse`}>OSM XML Points of Interest to CSV Parser</a>
             </li>
             <li>
               <span class="project-icon">💻</span>
-              <a href="https://andrew-martin-gis.github.io/portfolio/project10.html" target="_blank" rel="noopener noreferrer">JOSM PNG Calibration File Rotation Tool</a>
+              <a href={`${base}projects/png-cal-rotate`}>JOSM PNG Calibration File Rotation Tool</a>
             </li>
           </ul>
         </div>
@@ -303,7 +303,7 @@ const profileImg = `${base}/profile_picture.jpeg`;
   </section>
 
   <!-- ═══════════════════════════════════════════════════════ FOOTER ══════ -->
-  <footer id="footer" class="footer">
+  <footer class="footer">
     <div class="container">
       <p class="footer-copy">
         &copy; {new Date().getFullYear()} Andrew Martin
@@ -327,6 +327,7 @@ const profileImg = `${base}/profile_picture.jpeg`;
       </ul>
     </div>
   </footer>
+  <div id="bottom" aria-hidden="true"></div>
 </Base>
 
 <style>
