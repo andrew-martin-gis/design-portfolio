@@ -161,8 +161,61 @@ const profileImg = `${base}/profile_picture.jpeg`;
   <!-- ═══════════════════════════════════════════════════════ PROJECTS ═════ -->
   <section id="projects" class="section projects-section">
     <div class="container">
-      <h2>Projects</h2>
-      <!-- TODO: Projects section — planning in progress -->
+      <SectionTitle label="Side Projects" title="Projects" client:visible />
+
+      <div class="projects-grid">
+
+        <!-- Development card -->
+        <div class="about-card">
+          <h3 class="about-card-heading">Development</h3>
+          <ul class="project-links">
+            <li>
+              <span class="project-icon">💻</span>
+              <a href="https://andrew-martin-gis.github.io/portfolio/project2.html" target="_blank" rel="noopener noreferrer">JOSM Grid Creation Automation Python Script</a>
+            </li>
+            <li>
+              <span class="project-icon">💻</span>
+              <a href="https://andrew-martin-gis.github.io/portfolio/project7.html" target="_blank" rel="noopener noreferrer">Android ARGB to Hex Color Converter Python Script</a>
+            </li>
+            <li>
+              <span class="project-icon">💻</span>
+              <a href="https://andrew-martin-gis.github.io/portfolio/project8.html" target="_blank" rel="noopener noreferrer">OSM Portal Bounding Box Coordinate Extractor</a>
+            </li>
+            <li>
+              <span class="project-icon">💻</span>
+              <a href="https://andrew-martin-gis.github.io/portfolio/project9.html" target="_blank" rel="noopener noreferrer">OSM XML Points of Interest to CSV Parser</a>
+            </li>
+            <li>
+              <span class="project-icon">💻</span>
+              <a href="https://andrew-martin-gis.github.io/portfolio/project10.html" target="_blank" rel="noopener noreferrer">JOSM PNG Calibration File Rotation Tool</a>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Cartography card -->
+        <div class="about-card">
+          <h3 class="about-card-heading">Cartography</h3>
+          <ul class="project-links">
+            <li>
+              <span class="project-icon">🎓</span>
+              <a href="https://andrew-martin-gis.github.io/portfolio/project1.html" target="_blank" rel="noopener noreferrer">A Hydroclimatological Analysis of Severe Flood Events: A Case Study of Whitesburg, KY</a>
+            </li>
+            <li>
+              <span class="project-icon">🗺️</span>
+              <a href="https://andrew-martin-gis.github.io/portfolio/project3.html" target="_blank" rel="noopener noreferrer">Poverty Inequality of Kentucky Census Tracts 2020 (WebMap)</a>
+            </li>
+            <li>
+              <span class="project-icon">🗺️</span>
+              <a href="https://andrew-martin-gis.github.io/portfolio/project4.html" target="_blank" rel="noopener noreferrer">Clay City Flood Map</a>
+            </li>
+            <li>
+              <span class="project-icon">🗺️</span>
+              <a href="https://andrew-martin-gis.github.io/portfolio/project5.html" target="_blank" rel="noopener noreferrer">Shifting Kentucky Away From Coal To Sustainable Energy (StoryMap)</a>
+            </li>
+          </ul>
+        </div>
+
+      </div>
     </div>
   </section>
 
@@ -442,6 +495,52 @@ const profileImg = `${base}/profile_picture.jpeg`;
   /* ── Projects ────────────────────────────────────────────────────────── */
   .projects-section {
     padding-block: clamp(2rem, 4vw, 3.5rem);
+  }
+
+  .projects-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--gap);
+    align-items: start;
+  }
+
+  @media (max-width: 860px) {
+    .projects-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .project-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .project-links li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+  }
+
+  .project-icon {
+    flex-shrink: 0;
+    font-size: 0.95rem;
+    line-height: 1.65;
+  }
+
+  .project-links a {
+    font-size: 0.88rem;
+    font-weight: 300;
+    line-height: 1.65;
+    color: var(--text-secondary);
+    transition: color var(--transition);
+  }
+
+  .project-links a:hover {
+    color: var(--accent-light);
   }
 
   /* ── Footer ──────────────────────────────────────────────────────────── */
