@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { onMount, onDestroy } from 'svelte';
   import type { GozioApp } from '../data/gozioApps';
   import { activeAppIndex } from '../stores/carouselStore';
 
@@ -22,14 +23,68 @@
     { idx: farRight, role: 'far-right' },
   ];
 
+  /* ── Auto-rotation ── */
+  const DEFAULT_INTERVAL = 10_000;
+  const USER_INTERVAL    = 30_000;
+
+  let autoInterval = DEFAULT_INTERVAL;
+  let timer: ReturnType<typeof setInterval> | null = null;
+  let startTime = 0;
+  let rafId: number;
+  let ringEl: SVGCircleElement;
+
+  const CIRCUMFERENCE = 2 * Math.PI * 8; // r = 8
+
+  function startAutoRotate() {
+    stopAutoRotate();
+    startTime = performance.now();
+    timer = setInterval(() => {
+      activeAppIndex.update(i => wrap(i + 1));
+      // After one bumped cycle, revert to default
+      if (autoInterval !== DEFAULT_INTERVAL) {
+        autoInterval = DEFAULT_INTERVAL;
+        startAutoRotate();
+      } else {
+        startTime = performance.now();
+      }
+    }, autoInterval);
+    tickRing();
+  }
+
+  function stopAutoRotate() {
+    if (timer !== null) { clearInterval(timer); timer = null; }
+    if (rafId) cancelAnimationFrame(rafId);
+  }
+
+  function tickRing() {
+    const elapsed = performance.now() - startTime;
+    const progress = Math.min(elapsed / autoInterval, 1);
+    if (ringEl) {
+      ringEl.style.strokeDashoffset = String(CIRCUMFERENCE * (1 - progress));
+    }
+    rafId = requestAnimationFrame(tickRing);
+  }
+
+  function bumpInterval() {
+    autoInterval = USER_INTERVAL;
+    startAutoRotate();
+  }
+
+  onMount(() => startAutoRotate());
+  onDestroy(() => stopAutoRotate());
+
+  /* ── Navigation ── */
   function prev() {
     activeAppIndex.update(i => wrap(i - 1));
+    bumpInterval();
   }
   function next() {
     activeAppIndex.update(i => wrap(i + 1));
+    bumpInterval();
   }
   function goTo(idx: number) {
     activeAppIndex.set(idx);
+    bumpInterval();
   }
 
   // Swipe / pointer drag support
@@ -47,7 +102,12 @@
     if (pointerStartX !== null && pointerCurrentX !== null) {
       const delta = pointerCurrentX - pointerStartX;
       if (Math.abs(delta) > 60) {
-        delta < 0 ? next() : prev();
+        if (delta < 0) {
+          activeAppIndex.update(i => wrap(i + 1));
+        } else {
+          activeAppIndex.update(i => wrap(i - 1));
+        }
+        bumpInterval();
       }
     }
     pointerStartX = null;
@@ -105,17 +165,34 @@
     </svg>
   </button>
 
-  <!-- Dot indicators -->
+  <!-- Dot indicators with countdown ring -->
   <div class="dots" role="tablist" aria-label="App navigation dots">
     {#each apps as _, i}
-      <button
-        class="dot"
-        class:dot-active={i === $activeAppIndex}
-        on:click={() => goTo(i)}
-        role="tab"
-        aria-selected={i === $activeAppIndex}
-        aria-label="Go to app {i + 1}"
-      ></button>
+      <div class="dot-wrap">
+        <button
+          class="dot"
+          class:dot-active={i === $activeAppIndex}
+          on:click={() => goTo(i)}
+          role="tab"
+          aria-selected={i === $activeAppIndex}
+          aria-label="Go to app {i + 1}"
+        ></button>
+        {#if i === $activeAppIndex}
+          <svg class="countdown-ring" viewBox="0 0 20 20" width="20" height="20" aria-hidden="true">
+            <circle
+              bind:this={ringEl}
+              cx="10" cy="10" r="8"
+              fill="none"
+              stroke="var(--accent-light)"
+              stroke-width="1.5"
+              stroke-dasharray={CIRCUMFERENCE}
+              stroke-dashoffset={CIRCUMFERENCE}
+              stroke-linecap="round"
+              transform="rotate(-90 10 10)"
+            />
+          </svg>
+        {/if}
+      </div>
     {/each}
   </div>
 </div>
@@ -141,7 +218,7 @@
     gap: 0;
     perspective: 1200px;
     width: 100%;
-    height: clamp(140px, 20vw, 200px);
+    height: clamp(170px, 24vw, 250px);
   }
 
   .card {
@@ -168,34 +245,34 @@
 
   /* Size/opacity/rotation per slot */
   .card-center {
-    width: clamp(110px, 15vw, 160px);
+    width: clamp(130px, 18vw, 200px);
     transform: scale(1.0) rotateY(0deg);
     opacity: 1;
     z-index: 5;
     cursor: default;
   }
   .card-left {
-    width: clamp(80px, 11vw, 115px);
-    transform: scale(0.72) rotateY(8deg);
+    width: clamp(95px, 13vw, 140px);
+    transform: scale(0.82) rotateY(8deg);
     opacity: 0.6;
     z-index: 4;
   }
   .card-right {
-    width: clamp(80px, 11vw, 115px);
-    transform: scale(0.72) rotateY(-8deg);
+    width: clamp(95px, 13vw, 140px);
+    transform: scale(0.82) rotateY(-8deg);
     opacity: 0.6;
     z-index: 4;
   }
   .card-far-left {
-    width: clamp(58px, 8vw, 83px);
-    transform: scale(0.52) rotateY(14deg);
-    opacity: 0.28;
+    width: clamp(72px, 10vw, 105px);
+    transform: scale(0.65) rotateY(14deg);
+    opacity: 0.35;
     z-index: 3;
   }
   .card-far-right {
-    width: clamp(58px, 8vw, 83px);
-    transform: scale(0.52) rotateY(-14deg);
-    opacity: 0.28;
+    width: clamp(72px, 10vw, 105px);
+    transform: scale(0.65) rotateY(-14deg);
+    opacity: 0.35;
     z-index: 3;
   }
 
@@ -274,6 +351,7 @@
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     z-index: 10;
+    cursor: pointer;
   }
 
   @media (prefers-reduced-motion: no-preference) {
@@ -288,14 +366,22 @@
     color: #fff;
   }
 
-  .arrow-left  { left:  0; }
-  .arrow-right { right: 0; }
+  .arrow-left  { left:  -1.5rem; }
+  .arrow-right { right: -1.5rem; }
 
   /* ── Dot indicators ── */
   .dots {
     display: flex;
     align-items: center;
     gap: 0.4rem;
+  }
+
+  .dot-wrap {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 20px;
+    height: 20px;
   }
 
   .dot {
@@ -305,6 +391,7 @@
     background: rgba(255, 255, 255, 0.2);
     border: none;
     padding: 0;
+    cursor: pointer;
   }
 
   @media (prefers-reduced-motion: no-preference) {
@@ -314,7 +401,14 @@
   }
 
   .dot-active {
-    width: 18px;
+    width: 8px;
+    height: 8px;
     background: var(--accent-light);
+  }
+
+  .countdown-ring {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
   }
 </style>

@@ -8,7 +8,7 @@ export function getStaticPaths() {
 }
 
 const { project } = Astro.props;
-const { title, subtitle, description, tags, gradient, year, details } = project;
+const { title, subtitle, description, tags, gradient, year, details, links } = project;
 
 const base = import.meta.env.BASE_URL;
 ---
@@ -77,6 +77,36 @@ const base = import.meta.env.BASE_URL;
           </section>
         )}
       </>
+    )}
+
+    {/* ── Resources & Links (optional) ── */}
+    {links && links.length > 0 && (
+      <section class="detail-block links-block">
+        <h3 class="links-heading">Resources &amp; Links</h3>
+        <div class="links-list">
+          {links.map((link: { label: string; url: string; type: string }) => (
+            <a
+              href={link.url}
+              class={`resource-link resource-${link.type}`}
+              target={link.type === 'external' ? '_blank' : undefined}
+              rel={link.type === 'external' ? 'noopener noreferrer' : undefined}
+            >
+              {link.type === 'pdf' ? (
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <path d="M8 2v8M4 7l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M2 12v1.5a.5.5 0 0 0 .5.5h11a.5.5 0 0 0 .5-.5V12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              ) : (
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <path d="M6 2H3a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1v-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M9 2h5v5M14 2L7 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              )}
+              {link.label}
+            </a>
+          ))}
+        </div>
+      </section>
     )}
 
     <!-- Navigation between projects -->
@@ -256,6 +286,53 @@ const base = import.meta.env.BASE_URL;
     border: 1px solid var(--border);
     border-radius: 100px;
     padding: 0.35rem 0.9rem;
+  }
+
+  /* ── Resources & Links ─────────────────────────────────────────────── */
+  .links-heading {
+    font-size: 0.72rem;
+    font-weight: 400;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent-light);
+    margin-bottom: 1rem;
+  }
+
+  .links-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .resource-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    font-weight: 300;
+    color: var(--text-secondary);
+    background: rgba(59, 130, 246, 0.08);
+    border: 1px solid rgba(59, 130, 246, 0.25);
+    border-radius: 100px;
+    padding: 0.5rem 1.1rem;
+    text-decoration: none;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .resource-link {
+      transition: background 0.2s, border-color 0.2s, color 0.2s, transform 0.2s;
+    }
+  }
+
+  .resource-link:hover {
+    background: rgba(59, 130, 246, 0.18);
+    border-color: rgba(59, 130, 246, 0.5);
+    color: var(--accent-light);
+    transform: translateY(-1px);
+  }
+
+  .resource-link svg {
+    flex-shrink: 0;
   }
 
   /* ── Project navigation ────────────────────────────────────────────── */
