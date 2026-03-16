@@ -12,6 +12,10 @@
 
   let active     = '';
   let scrolled   = false;
+  let menuOpen   = false;
+
+  function toggleMenu() { menuOpen = !menuOpen; }
+  function closeMenu()  { menuOpen = false; }
 
   onMount(() => {
     // Track scroll position for nav background
@@ -44,10 +48,10 @@
     </a>
 
     <!-- Nav links -->
-    <ul class="nav-links">
+    <ul class="nav-links" class:open={menuOpen}>
       {#each links as { href, label }}
         <li>
-          <a {href} class:active={active === href}>{label}</a>
+          <a {href} class:active={active === href} on:click={closeMenu}>{label}</a>
         </li>
       {/each}
     </ul>
@@ -60,6 +64,13 @@
     >
       Contact
     </a>
+
+    <!-- Mobile menu toggle -->
+    <button class="menu-toggle" on:click={toggleMenu} aria-label="Toggle menu">
+      <span class="bar" class:open={menuOpen}></span>
+      <span class="bar" class:open={menuOpen}></span>
+      <span class="bar" class:open={menuOpen}></span>
+    </button>
   </div>
 </nav>
 
@@ -74,6 +85,7 @@
     height: 4.5rem;
     display: flex;
     align-items: center;
+    background: rgba(2, 8, 24, 0.4);
     transition: background 0.4s ease, backdrop-filter 0.4s ease,
                 border-color 0.4s ease;
     border-bottom: 1px solid transparent;
@@ -126,9 +138,9 @@
   }
 
   .nav-links a {
-    font-size: 0.8rem;
+    font-size: 0.85rem;
     font-weight: 400;
-    letter-spacing: 0.15em;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
     color: var(--text-secondary);
     position: relative;
@@ -138,10 +150,10 @@
   .nav-links a::after {
     content: '';
     position: absolute;
-    bottom: -4px;
+    bottom: -3px;
     left: 0;
     width: 0;
-    height: 1px;
+    height: 2px;
     background: var(--accent-light);
     transition: width 0.25s ease;
   }
@@ -176,9 +188,73 @@
     border-color: var(--accent);
   }
 
+  /* Hamburger toggle — hidden on desktop */
+  .menu-toggle {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    padding: 0.5rem;
+    margin-left: auto;
+  }
+
+  .menu-toggle .bar {
+    display: block;
+    width: 20px;
+    height: 2px;
+    background: var(--text-secondary);
+    border-radius: 1px;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+  }
+
+  .menu-toggle .bar.open:nth-child(1) {
+    transform: translateY(7px) rotate(45deg);
+  }
+  .menu-toggle .bar.open:nth-child(2) {
+    opacity: 0;
+  }
+  .menu-toggle .bar.open:nth-child(3) {
+    transform: translateY(-7px) rotate(-45deg);
+  }
+
   @media (max-width: 600px) {
     .logo-name { display: none; }
-    .nav-links { gap: 1.25rem; }
     .cta { display: none; }
+
+    .menu-toggle {
+      display: flex;
+    }
+
+    .nav-links {
+      position: fixed;
+      top: 4.5rem;
+      left: 0;
+      right: 0;
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
+      padding: 1rem 0;
+      margin-left: 0;
+      background: rgba(2, 8, 24, 0.95);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      transform: translateY(-100%);
+      opacity: 0;
+      pointer-events: none;
+      transition: transform 0.3s ease, opacity 0.3s ease;
+    }
+
+    .nav-links.open {
+      transform: translateY(0);
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .nav-links a {
+      font-size: 0.9rem;
+      padding: 0.75rem 1.5rem;
+      width: 100%;
+      text-align: center;
+    }
   }
 </style>

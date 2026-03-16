@@ -356,16 +356,8 @@
       }
     };
 
-    // Touch passthrough
-    const onTStart = e => { const t = e.touches[0]; onDown({clientX:t.clientX,clientY:t.clientY}); };
-    const onTMove  = e => { const t = e.touches[0]; onMove({clientX:t.clientX,clientY:t.clientY}); e.preventDefault(); };
-    const onTEnd   = e => { const t = e.changedTouches[0]; onUp({clientX:t.clientX,clientY:t.clientY}); };
-
     canvas.addEventListener('mousedown',  onDown);
     canvas.addEventListener('mouseleave', onLeave);
-    canvas.addEventListener('touchstart', onTStart, { passive:false });
-    canvas.addEventListener('touchmove',  onTMove,  { passive:false });
-    canvas.addEventListener('touchend',   onTEnd);
     window.addEventListener('mousemove',  onMove);
     window.addEventListener('mouseup',    onUp);
 
@@ -384,9 +376,6 @@
       window.removeEventListener('resize',    onResize);
       canvas.removeEventListener('mousedown',  onDown);
       canvas.removeEventListener('mouseleave', onLeave);
-      canvas.removeEventListener('touchstart', onTStart);
-      canvas.removeEventListener('touchmove',  onTMove);
-      canvas.removeEventListener('touchend',   onTEnd);
       renderer.dispose();
     };
   });
@@ -441,6 +430,7 @@
     cursor: grab;
     user-select: none;
     -webkit-user-select: none;
+    touch-action: pan-y;
   }
 
   /* ── Toggle button group — bottom-right ── */

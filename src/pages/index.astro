@@ -333,7 +333,7 @@ const profileImg = `${base}/profile_picture.jpeg`;
   /* ── Hero ───────────────────────────────────────────────────────────── */
   .hero {
     position: relative;
-    height: 100svh;
+    height: 100dvh;
     min-height: 600px;
     overflow: hidden;
   }
@@ -354,7 +354,7 @@ const profileImg = `${base}/profile_picture.jpeg`;
     bottom: 0;
     left: 0;
     padding: clamp(1.5rem, 4vw, 3.5rem) clamp(1.75rem, 5vw, 4.5rem);
-    pointer-events: none;
+    pointer-events: auto;
     /* Stylized backdrop so text is legible over the globe in any view */
     background: linear-gradient(
       135deg,
@@ -411,6 +411,24 @@ const profileImg = `${base}/profile_picture.jpeg`;
     pointer-events: auto;
   }
   .scroll-arrow:hover { color: var(--accent-light); }
+
+  @media (min-width: 769px) {
+    .hero-content {
+      pointer-events: none;
+    }
+    .scroll-arrow {
+      pointer-events: auto;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .hero-content {
+      right: 0;
+      max-width: 100%;
+      border-radius: 0;
+      border-right: none;
+    }
+  }
 
   @keyframes arrowPulse {
     0%, 100% { transform: translateY(0); opacity: 0.3; }

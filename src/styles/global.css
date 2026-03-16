@@ -10,7 +10,7 @@
 
   --text-primary:   #f0f6ff;
   --text-secondary: #94a3b8;
-  --text-muted:     rgba(255, 255, 255, 0.28);
+  --text-muted:     rgba(255, 255, 255, 0.45);
 
   --accent:       #3b82f6;
   --accent-light: #60a5fa;
@@ -63,7 +63,7 @@ ul { list-style: none; }
 
 /* ── Typography ────────────────────────────────────────────────────────────── */
 h1, h2, h3, h4 {
-  font-weight: 200;
+  font-weight: 300;
   letter-spacing: 0.02em;
   line-height: 1.1;
 }
