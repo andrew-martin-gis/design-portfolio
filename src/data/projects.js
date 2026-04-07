@@ -204,6 +204,27 @@ export const projects = [
       tools:      ['Python', 'JOSM', '2D Rotation Matrix'],
     },
   },
+  {
+    slug:        'josm-grid-automation',
+    title:       'JOSM Grid Creation Automation',
+    subtitle:    'Python Script',
+    description: 'A Python automation script that streamlines the creation of OSM grids within JOSM (Java OpenStreetMap Editor). Automates repetitive grid-generation tasks to speed up mapping workflows for large indoor or outdoor survey areas.',
+    tags:        ['Python', 'JOSM', 'OpenStreetMap', 'Automation'],
+    year:        2023,
+    category:    'development',
+    type:        'Tool',
+    gradient:    'linear-gradient(135deg, #0a1a2e 0%, #1a2a1a 50%, #0a1a2e 100%)',
+    featured:    false,
+    links: [
+      { label: 'GitHub Repository', url: 'https://github.com/andrew-martin-gis/create-osm-grids', type: 'external' },
+    ],
+    details: {
+      challenge:  'Manually creating OSM grid structures in JOSM for large mapping areas is repetitive and time-consuming, prone to inconsistencies across grid cells.',
+      approach:   'Built a Python script that automates the grid creation process, generating consistent OSM-compatible grid geometries that can be loaded directly into JOSM.',
+      outcome:    'Reduced the time required to set up mapping grids for large survey areas, enabling more consistent and efficient field mapping workflows.',
+      tools:      ['Python', 'JOSM', 'OpenStreetMap XML'],
+    },
+  },
   /* ── Cartography / Academic projects (migrated from old portfolio) ────── */
   {
     slug:        'whitesburg-flood-analysis',
