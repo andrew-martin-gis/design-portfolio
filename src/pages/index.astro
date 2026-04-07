@@ -308,6 +308,7 @@ const profileImg = `${base}/profile_picture.jpeg`;
       <p class="footer-copy">
         &copy; {new Date().getFullYear()} Andrew Martin
       </p>
+      <a href="https://andrew-martin-gis.github.io/portfolio/" target="_blank" rel="noopener" class="footer-v1-link">Portfolio v1 (HTML/CSS)</a>
       <ul class="footer-links">
         <li>
           <a href="https://github.com/andrew-martin-gis" target="_blank" rel="noopener" aria-label="GitHub">
@@ -720,6 +721,14 @@ const profileImg = `${base}/profile_picture.jpeg`;
     color: var(--text-muted);
     letter-spacing: 0.05em;
   }
+
+  .footer-v1-link {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    text-decoration: none;
+  }
+
+  .footer-v1-link:hover { color: var(--accent-light); }
 
   .footer-links {
     display: flex;
